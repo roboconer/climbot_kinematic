@@ -1,5 +1,5 @@
-﻿/*****************************************************************************
- *        Robot运动学类库                                                    *
+/*****************************************************************************
+ *        Robot�˶�ѧ���                                                    *
  *        SCUT, 2010                                                         *
  *        Author :                                                           *
  *        Version number :  0.10                                             *
@@ -21,29 +21,29 @@ using namespace std;
 int GetMatrixnum = 0;
 
 /*****************************************************************************
- * 函数：Kine()
- * 功能：构造函数
+ * ������Kine()
+ * ���ܣ����캯��
  *****************************************************************************/
 Kine::Kine()
 {
 }
 
 /*****************************************************************************
- * 函数：~Kine()
- * 功能：析构函数
+ * ������~Kine()
+ * ���ܣ���������
  *****************************************************************************/
 Kine::~Kine()
 {
 }
 
 /*****************************************************************************
- * 函数：RadInRange()
- * 功能：由当前转角优化计算转角
- *           - 与当前值比较,将角度变换为(-360,0)或(0,+360)范围内
+ * ������RadInRange()
+ * ���ܣ��ɵ�ǰת���Ż�����ת��
+ *           - �뵱ǰֵ�Ƚ�,���Ƕȱ任Ϊ(-360,0)��(0,+360)��Χ��
  *
- * 输入：double* id_rad - 计算转角(弧度)
- *       double* id_deg - 当前转角(角度)
- * 输出：double* id_rad - 计算转角(弧度)
+ * ���룺double* id_rad - ����ת��(����)
+ *       double* id_deg - ��ǰת��(�Ƕ�)
+ * �����double* id_rad - ����ת��(����)
  *****************************************************************************/
 void Kine::RadInRange(double* pdRad, double* pdDeg)
 {
@@ -86,14 +86,14 @@ void Kine::RadInRange(double* pdRad, double* pdDeg)
 }
 
 /******************************************************************************
- * 函数：Set_Length()
- * 功能：设置杆长
+ * ������Set_Length()
+ * ���ܣ����ø˳�
  *
- * 输入：double l1 - 杆长L1
- *       double l2 - 杆长L2
- *       double l3 - 杆长L3
- *       double l4 - 杆长L4
- *       double l5 - 杆长L5
+ * ���룺double l1 - �˳�L1
+ *       double l2 - �˳�L2
+ *       double l3 - �˳�L3
+ *       double l4 - �˳�L4
+ *       double l5 - �˳�L5
  ******************************************************************************/
 void Kine_IR_FiveDoF::Set_Length(double gdLen[])
 {
@@ -114,13 +114,13 @@ void Kine_IR_FiveDoF::Set_Tool(double gdTool[])
 	}
 }
 /******************************************************************************
- * 函数：FKine()
- * 功能：正解
+ * ������FKine()
+ * ���ܣ�����
  *
- * 输入：double* gdJPos - 关节转角, 5关节
- * 输出：double* gdCPos - 正解位姿, (x,y,z,w,p,r),X-Y-Z固定角,
+ * ���룺double* gdJPos - �ؽ�ת��, 5�ؽ�
+ * �����double* gdCPos - ����λ��, (x,y,z,w,p,r),X-Y-Z�̶���,
  *
- * 返回：int - 0成功,
+ * ���أ�int - 0�ɹ�,
  ******************************************************************************/
 int Kine_IR_FiveDoF::FKine(double gdJPos[], double gdCPos[])
 {
@@ -128,84 +128,84 @@ int Kine_IR_FiveDoF::FKine(double gdJPos[], double gdCPos[])
 	return kine.FKine(gdJPos, gdCPos);
 #endif
 
-	// 关节角度 - 关节弧度 - 手腕矩阵 - Tcp矩阵 - 位姿
+	// �ؽڽǶ� - �ؽڻ��� - ������� - Tcp���� - λ��
 	// id_jPos  -   jRad   - lm_Wrist - lm_Tcp  - id_cPos
 	double ld_jRad[5];// = gd_rad[0];
 	
 	double c23, s23;
 	
-	double ld_temp[8];     // 中间变量
-	MtxKine lm_Wrist;      // 中间变量,手腕矩阵
-	MtxKine lm_Tool;       // 中间变量,工具矩阵
-	MtxKine lm_Tcp;        // 中间变量,TCP矩阵
+	double ld_temp[8];     // �м����
+	MtxKine lm_Wrist;      // �м����,�������
+	MtxKine lm_Tool;       // �м����,���߾���
+	MtxKine lm_Tcp;        // �м����,TCP����
 
-    //--------------------- 关节弧度 -------------------------//
+    //--------------------- �ؽڻ��� -------------------------//
 	ld_jRad[0] = gdJPos[0] * PI_RAD;
 	ld_jRad[1] = gdJPos[1] * PI_RAD;
 	ld_jRad[2] = gdJPos[2] * PI_RAD;
 	ld_jRad[3] = gdJPos[3] * PI_RAD;
 	ld_jRad[4] = gdJPos[4] * PI_RAD;
 
-    //--------------------- 手腕矩阵 -------------------------//
+    //--------------------- ������� -------------------------//
     c23 = cos(ld_jRad[1]+ld_jRad[2]);
     s23 = sin(ld_jRad[1]+ld_jRad[2]);	
 
-    // 计算r11 //
+    // ����r11 //
 	lm_Wrist.R11 = cos(ld_jRad[0]) * c23 * cos(ld_jRad[3]) * cos(ld_jRad[4]) 
 		+ sin(ld_jRad[0]) * sin(ld_jRad[3]) * cos(ld_jRad[4])
 		- cos(ld_jRad[0]) * s23 * sin(ld_jRad[4]);
   
-     // 计算r12 //
+     // ����r12 //
 	lm_Wrist.R12 = - cos(ld_jRad[0]) * c23 * sin(ld_jRad[3])
 				   + sin(ld_jRad[0]) * cos(ld_jRad[3]);
 
-     // 计算r13 //
+     // ����r13 //
 	lm_Wrist.R13 = cos(ld_jRad[0]) * c23 * cos(ld_jRad[3]) * sin(ld_jRad[4]) 
 		+ sin(ld_jRad[0]) * sin(ld_jRad[3]) * sin(ld_jRad[4])
 		+ cos(ld_jRad[0]) * s23 * cos(ld_jRad[4]);
         
-    // 计算r21 //
+    // ����r21 //
 	lm_Wrist.R21 = sin(ld_jRad[0]) * c23 * cos(ld_jRad[3]) * cos(ld_jRad[4]) 
 		- cos(ld_jRad[0]) * sin(ld_jRad[3]) * cos(ld_jRad[4])
 		- sin(ld_jRad[0]) * s23 * sin(ld_jRad[4]);
 
-    // 计算r22 //    
+    // ����r22 //    
 	lm_Wrist.R22 = - sin(ld_jRad[0]) * c23 * sin(ld_jRad[3])
 				   - cos(ld_jRad[0]) * cos(ld_jRad[3]);
         
-    // 计算r23 //    
+    // ����r23 //    
 	lm_Wrist.R23 = sin(ld_jRad[0]) * c23 * cos(ld_jRad[3]) * sin(ld_jRad[4]) 
 		- cos(ld_jRad[0]) * sin(ld_jRad[3]) * sin(ld_jRad[4])
 		+ sin(ld_jRad[0]) * s23 * cos(ld_jRad[4]);
         
-    // 计算r31 //
+    // ����r31 //
 	lm_Wrist.R31 = s23 * cos(ld_jRad[3]) * cos(ld_jRad[4]) 
 		+ c23 * sin(ld_jRad[4]);
 
-    // 计算r32 //    
+    // ����r32 //    
 	lm_Wrist.R32 = - s23 * sin(ld_jRad[3]);
     
-    // 计算r33 //
+    // ����r33 //
 	lm_Wrist.R33 = + s23 * cos(ld_jRad[3]) * sin(ld_jRad[4]) 
         - c23 * cos(ld_jRad[4]);
 
-    // 计算x //
+    // ����x //
 	lm_Wrist.X = lm_Wrist.R13 * m_dL5
 		+ cos(ld_jRad[0]) * s23 * (m_dL3 + m_dL4)
 		+ cos(ld_jRad[0]) * cos(ld_jRad[1]) * m_dL2;
 
-    // 计算y //
+    // ����y //
 	lm_Wrist.Y = lm_Wrist.R23 * m_dL5
 		+ sin(ld_jRad[0]) * s23 * (m_dL3 + m_dL4)
 		+ sin(ld_jRad[0]) * cos(ld_jRad[1]) * m_dL2;
     
-    // 计算z //
+    // ����z //
 	lm_Wrist.Z = lm_Wrist.R33 * m_dL5
 		- c23 * (m_dL3 + m_dL4)
 		+ sin(ld_jRad[1]) * m_dL2;
 
-    //--------------------- Tcp矩阵 -------------------------//
-    // 计算工具的变换矩阵 //
+    //--------------------- Tcp���� -------------------------//
+    // ���㹤�ߵı任���� //
 	ld_temp[1] = sin(m_dTool[3] * PI_RAD);//0
 	ld_temp[2] = cos(m_dTool[3] * PI_RAD);//1
 	ld_temp[3] = sin(m_dTool[4] * PI_RAD);//0
@@ -223,7 +223,7 @@ int Kine_IR_FiveDoF::FKine(double gdJPos[], double gdCPos[])
     lm_Tool.R32 = ld_temp[4] * ld_temp[5];                                       //0
     lm_Tool.R33 = ld_temp[4] * ld_temp[6];                                       //1
 
-    // 计算Tcp姿态矩阵的参数 //
+    // ����Tcp��̬����Ĳ��� //
     lm_Tcp.R11 = lm_Wrist.R11 * lm_Tool.R11 + lm_Wrist.R12 * lm_Tool.R21 + lm_Wrist.R13 * lm_Tool.R31;
     lm_Tcp.R21 = lm_Wrist.R21 * lm_Tool.R11 + lm_Wrist.R22 * lm_Tool.R21 + lm_Wrist.R23 * lm_Tool.R31;
     lm_Tcp.R31 = lm_Wrist.R31 * lm_Tool.R11 + lm_Wrist.R32 * lm_Tool.R21 + lm_Wrist.R33 * lm_Tool.R31;
@@ -232,7 +232,7 @@ int Kine_IR_FiveDoF::FKine(double gdJPos[], double gdCPos[])
     lm_Tcp.R12 = lm_Wrist.R11 * lm_Tool.R12 + lm_Wrist.R12 * lm_Tool.R22 + lm_Wrist.R13 * lm_Tool.R32;
     lm_Tcp.R22 = lm_Wrist.R21 * lm_Tool.R12 + lm_Wrist.R22 * lm_Tool.R22 + lm_Wrist.R23 * lm_Tool.R32;
 
-    // 计算Tcp位置 //
+    // ����Tcpλ�� //
 	lm_Tcp.X = lm_Wrist.X + lm_Wrist.R11 * (m_dTool[0])
                           + lm_Wrist.R12 * (m_dTool[1])
                           + lm_Wrist.R13 * (m_dTool[2]);//lm_Wrist.X
@@ -244,8 +244,8 @@ int Kine_IR_FiveDoF::FKine(double gdJPos[], double gdCPos[])
                           + lm_Wrist.R33 * (m_dTool[2]);//lm_Wrist.Z
 
 
-    //--------------------- Tcp位姿 -------------------------//
-    // 计算工具坐标系RPY角（X-Y-Z固定角坐标系） - rad //
+    //--------------------- Tcpλ�� -------------------------//
+    // ���㹤������ϵRPY�ǣ�X-Y-Z�̶�������ϵ�� - rad //
 	ld_temp[5] = atan2(-lm_Tcp.R31, sqrt(lm_Tcp.R11 * lm_Tcp.R11 + lm_Tcp.R21 * lm_Tcp.R21));
 
     if (fabs(ld_temp[5] - PI / 2) < RT_LITTLE)
@@ -299,12 +299,12 @@ int Kine_IR_FiveDoF::FKine(double gdJPos[], double gdCPos[])
 
 
 /******************************************************************************
- * 函数：FKineMatrix()
- * 功能：正解,输出4×4矩阵
+ * ������FKineMatrix()
+ * ���ܣ�����,���4��4����
  *
- * 输入：double* TransfMatrix - 关节转角, 5关节
+ * ���룺double* TransfMatrix - �ؽ�ת��, 5�ؽ�
  *
- * 返回：int - 0成功,
+ * ���أ�int - 0�ɹ�,
  ******************************************************************************/
 void Kine_IR_FiveDoF::FKineMatrix(double gdJPos[])
 {
@@ -320,84 +320,84 @@ void Kine_IR_FiveDoF::FKineMatrix(double gdJPos[])
 	{
 		m_dTool[i] = 0;//gdTool[i];
 	}
-	// 关节角度 - 关节弧度 - 手腕矩阵 - Tcp矩阵 - 位姿
+	// �ؽڽǶ� - �ؽڻ��� - ������� - Tcp���� - λ��
 	// id_jPos  -   jRad   - lm_Wrist - lm_Tcp  - id_cPos
 	double ld_jRad[5]={0};// = gd_rad[0];
 	double gdCPos[6]={0};
 	double c23=0, s23=0;
 
-	double ld_temp[8]={0};     // 中间变量
-	MtxKine lm_Wrist;      // 中间变量,手腕矩阵
-	MtxKine lm_Tool;       // 中间变量,工具矩阵
-	MtxKine lm_Tcp;        // 中间变量,TCP矩阵
+	double ld_temp[8]={0};     // �м����
+	MtxKine lm_Wrist;      // �м����,�������
+	MtxKine lm_Tool;       // �м����,���߾���
+	MtxKine lm_Tcp;        // �м����,TCP����
 
-	//--------------------- 关节弧度 -------------------------//
+	//--------------------- �ؽڻ��� -------------------------//
 	ld_jRad[0] = gdJPos[0] * PI_RAD;
 	ld_jRad[1] = gdJPos[1] * PI_RAD;
 	ld_jRad[2] = gdJPos[2] * PI_RAD;
 	ld_jRad[3] = gdJPos[3] * PI_RAD;
 	ld_jRad[4] = gdJPos[4] * PI_RAD;
 
-	//--------------------- 手腕矩阵 -------------------------//
+	//--------------------- ������� -------------------------//
 	c23 = cos(ld_jRad[1]+ld_jRad[2]);
 	s23 = sin(ld_jRad[1]+ld_jRad[2]);	
 
-	// 计算r11 //
+	// ����r11 //
 	lm_Wrist.R11 = cos(ld_jRad[0]) * c23 * cos(ld_jRad[3]) * cos(ld_jRad[4]) 
 		+ sin(ld_jRad[0]) * sin(ld_jRad[3]) * cos(ld_jRad[4])
 		- cos(ld_jRad[0]) * s23 * sin(ld_jRad[4]);
 
-	// 计算r12 //
+	// ����r12 //
 	lm_Wrist.R12 = - cos(ld_jRad[0]) * c23 * sin(ld_jRad[3])
 		+ sin(ld_jRad[0]) * cos(ld_jRad[3]);
 
-	// 计算r13 //
+	// ����r13 //
 	lm_Wrist.R13 = cos(ld_jRad[0]) * c23 * cos(ld_jRad[3]) * sin(ld_jRad[4]) 
 		+ sin(ld_jRad[0]) * sin(ld_jRad[3]) * sin(ld_jRad[4])
 		+ cos(ld_jRad[0]) * s23 * cos(ld_jRad[4]);
 
-	// 计算r21 //
+	// ����r21 //
 	lm_Wrist.R21 = sin(ld_jRad[0]) * c23 * cos(ld_jRad[3]) * cos(ld_jRad[4]) 
 		- cos(ld_jRad[0]) * sin(ld_jRad[3]) * cos(ld_jRad[4])
 		- sin(ld_jRad[0]) * s23 * sin(ld_jRad[4]);
 
-	// 计算r22 //    
+	// ����r22 //    
 	lm_Wrist.R22 = - sin(ld_jRad[0]) * c23 * sin(ld_jRad[3])
 		- cos(ld_jRad[0]) * cos(ld_jRad[3]);
 
-	// 计算r23 //    
+	// ����r23 //    
 	lm_Wrist.R23 = sin(ld_jRad[0]) * c23 * cos(ld_jRad[3]) * sin(ld_jRad[4]) 
 		- cos(ld_jRad[0]) * sin(ld_jRad[3]) * sin(ld_jRad[4])
 		+ sin(ld_jRad[0]) * s23 * cos(ld_jRad[4]);
 
-	// 计算r31 //
+	// ����r31 //
 	lm_Wrist.R31 = + s23 * cos(ld_jRad[3]) * cos(ld_jRad[4]) 
 		+ c23 * sin(ld_jRad[4]);
 
-	// 计算r32 //    
+	// ����r32 //    
 	lm_Wrist.R32 = - s23 * sin(ld_jRad[3]);
 
-	// 计算r33 //
+	// ����r33 //
 	lm_Wrist.R33 = + s23 * cos(ld_jRad[3]) * sin(ld_jRad[4]) 
 		- c23 * cos(ld_jRad[4]);
 
-	// 计算x //
+	// ����x //
 	lm_Wrist.X = lm_Wrist.R13 * m_dL_GetMatrix[5]
 		+ cos(ld_jRad[0]) * s23 * (m_dL_GetMatrix[3] + m_dL_GetMatrix[4])
 		+ cos(ld_jRad[0]) * cos(ld_jRad[1]) * m_dL_GetMatrix[2];
 
-	// 计算y //
+	// ����y //
 	lm_Wrist.Y = lm_Wrist.R23 * m_dL_GetMatrix[5]
 		+ sin(ld_jRad[0]) * s23 * (m_dL_GetMatrix[3] + m_dL_GetMatrix[4])
 		+ sin(ld_jRad[0]) * cos(ld_jRad[1]) * m_dL_GetMatrix[2];
 
-	// 计算z //
+	// ����z //
 	lm_Wrist.Z = lm_Wrist.R33 * m_dL_GetMatrix[5]
 		- c23 * (m_dL_GetMatrix[3] + m_dL_GetMatrix[4])
 		+ sin(ld_jRad[1]) * m_dL_GetMatrix[2];
 
-	//--------------------- Tcp矩阵 -------------------------//
-	// 计算工具的变换矩阵 //
+	//--------------------- Tcp���� -------------------------//
+	// ���㹤�ߵı任���� //
 	ld_temp[1] = sin(m_dTool[3] * PI_RAD);//0
 	ld_temp[2] = cos(m_dTool[3] * PI_RAD);//1
 	ld_temp[3] = sin(m_dTool[4] * PI_RAD);//0
@@ -415,7 +415,7 @@ void Kine_IR_FiveDoF::FKineMatrix(double gdJPos[])
 	lm_Tool.R32 = ld_temp[4] * ld_temp[5];                                       //0
 	lm_Tool.R33 = ld_temp[4] * ld_temp[6];                                       //1
 
-	// 计算Tcp姿态矩阵的参数 //
+	// ����Tcp��̬����Ĳ��� //
 	lm_Tcp.R11 = lm_Wrist.R11 * lm_Tool.R11 + lm_Wrist.R12 * lm_Tool.R21 + lm_Wrist.R13 * lm_Tool.R31;//lm_Wrist.R11
 	lm_Tcp.R21 = lm_Wrist.R21 * lm_Tool.R11 + lm_Wrist.R22 * lm_Tool.R21 + lm_Wrist.R23 * lm_Tool.R31;//lm_Wrist.R21
 	lm_Tcp.R31 = lm_Wrist.R31 * lm_Tool.R11 + lm_Wrist.R32 * lm_Tool.R21 + lm_Wrist.R33 * lm_Tool.R31;//lm_Wrist.R31
@@ -424,7 +424,7 @@ void Kine_IR_FiveDoF::FKineMatrix(double gdJPos[])
 	lm_Tcp.R12 = lm_Wrist.R11 * lm_Tool.R12 + lm_Wrist.R12 * lm_Tool.R22 + lm_Wrist.R13 * lm_Tool.R32;//lm_Wrist.R12
 	lm_Tcp.R22 = lm_Wrist.R21 * lm_Tool.R12 + lm_Wrist.R22 * lm_Tool.R22 + lm_Wrist.R23 * lm_Tool.R32;//lm_Wrist.R22
 
-	// 计算Tcp位置 //
+	// ����Tcpλ�� //
 	lm_Tcp.X = lm_Wrist.X + lm_Wrist.R11 * (m_dTool[0])
 		+ lm_Wrist.R12 * (m_dTool[1])
 		+ lm_Wrist.R13 * (m_dTool[2]);//lm_Wrist.X
@@ -435,7 +435,7 @@ void Kine_IR_FiveDoF::FKineMatrix(double gdJPos[])
 		+ lm_Wrist.R32 * (m_dTool[1])
 		+ lm_Wrist.R33 * (m_dTool[2]);//lm_Wrist.Z
 
-	////测试
+	////����
 	//lm_Tcp.R11 =  -0.1210526305284929;//lm_Wrist.R11
 	//lm_Tcp.R21 = -0.99245557933853790;//lm_Wrist.R21
 	//lm_Tcp.R31 = -0.019446945311264285;//lm_Wrist.R31
@@ -448,8 +448,8 @@ void Kine_IR_FiveDoF::FKineMatrix(double gdJPos[])
 	//lm_Tcp.Y = 84.29;//lm_Wrist.Y
 	//lm_Tcp.Z = 318.58;//lm_Wrist.Z
 
-	//--------------------- Tcp位姿 -------------------------//
-	// 计算工具坐标系RPY角 - rad //
+	//--------------------- Tcpλ�� -------------------------//
+	// ���㹤������ϵRPY�� - rad //
 	ld_temp[5] = atan2(-lm_Tcp.R31, sqrt(lm_Tcp.R11 * lm_Tcp.R11 + lm_Tcp.R21 * lm_Tcp.R21));
 
 	if (fabs(ld_temp[5] - PI / 2) < RT_LITTLE)
@@ -530,14 +530,14 @@ void Kine_IR_FiveDoF::FKineMatrix(double gdJPos[])
 }
 
 /******************************************************************************
- * 函数：IKine()
- * 功能：逆解
+ * ������IKine()
+ * ���ܣ����
  *
- * 输入：double* gdCPos  - 位姿数组, (x,y,z,w,p,r)
- *       double* gdJCurr - 当前关节转角, 5关节
- * 输出：double* id_jPos  - 逆解关节转角, 5关节
+ * ���룺double* gdCPos  - λ������, (x,y,z,w,p,r)
+ *       double* gdJCurr - ��ǰ�ؽ�ת��, 5�ؽ�
+ * �����double* id_jPos  - ���ؽ�ת��, 5�ؽ�
  *
- * 返回：int - 0成功, 其他错误
+ * ���أ�int - 0�ɹ�, ��������
  ******************************************************************************/
 int Kine_IR_FiveDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 {
@@ -547,21 +547,21 @@ int Kine_IR_FiveDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 #endif
 
 
-	// 位姿 - Tcp矩阵 - 手腕矩阵 - 关节弧度 - 关节角度
+	// λ�� - Tcp���� - ������� - �ؽڻ��� - �ؽڽǶ�
 	// id_cPos - lm_Tcp - lm_Wrist    - ld_jRad     - id_jPos
 	int i;
 	int result;
-	int li_flag[4] = {0};      // 四组解的情况,0为有解
+	int li_flag[4] = {0};      // ���������,0Ϊ�н�
 
 	double s1,c1,s3,c3, s4, c4, s5, c5, s23, c23;
 
-	double ld_temp[8];       // 中间变量
-	MtxKine lm_Wrist;        // 中间变量,手腕矩阵
-	MtxKine lm_Tool;         // 中间变量,工具矩阵
-	MtxKine lm_Tcp;          // 中间变量,TCP矩阵
-	double gd_rad[4][5];     // 中间变量,四组逆解
+	double ld_temp[8];       // �м����
+	MtxKine lm_Wrist;        // �м����,�������
+	MtxKine lm_Tool;         // �м����,���߾���
+	MtxKine lm_Tcp;          // �м����,TCP����
+	double gd_rad[4][5];     // �м����,�������
 
-    //--------------------- TCP矩阵 -------------------------//
+    //--------------------- TCP���� -------------------------//
 // 	gdCPos[3]=169.534;
 // 	gdCPos[4]=-0.245618;
 // 	gdCPos[5]=179.999;
@@ -583,8 +583,8 @@ int Kine_IR_FiveDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
     lm_Tcp.R32 = ld_temp[4] * ld_temp[5];
     lm_Tcp.R33 = ld_temp[4] * ld_temp[6];
 
-    //--------------------- 工具矩阵 -------------------------//
-    // 计算工具的变换矩阵 //
+    //--------------------- ���߾��� -------------------------//
+    // ���㹤�ߵı任���� //
 	ld_temp[1] = sin(m_dTool[3] * PI_RAD);
 	ld_temp[2] = cos(m_dTool[3] * PI_RAD);
 	ld_temp[3] = sin(m_dTool[4] * PI_RAD);
@@ -602,7 +602,7 @@ int Kine_IR_FiveDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
     lm_Tool.R32 = ld_temp[4] * ld_temp[5];
     lm_Tool.R33 = ld_temp[4] * ld_temp[6];
 
-    // 姿态求逆 //
+    // ��̬���� //
     ld_temp[1] = lm_Tool.R12;
     lm_Tool.R12 = lm_Tool.R21;
     lm_Tool.R21 = ld_temp[1];
@@ -615,7 +615,7 @@ int Kine_IR_FiveDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
     lm_Tool.R23 = lm_Tool.R32;
     lm_Tool.R32 = ld_temp[1];
     
-	// 位置求逆 //
+	// λ������ //
 	lm_Tool.X = -( lm_Tool.R11 * m_dTool[0] + 
 				   lm_Tool.R12 * m_dTool[1] +
                    lm_Tool.R13 * m_dTool[2] );
@@ -626,8 +626,8 @@ int Kine_IR_FiveDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 				   lm_Tool.R32 * m_dTool[1] +
                    lm_Tool.R33 * m_dTool[2] );
 
-    //--------------------- 手腕矩阵 -------------------------//
-    // 姿态矩阵 //
+    //--------------------- ������� -------------------------//
+    // ��̬���� //
     lm_Wrist.R11 = lm_Tcp.R11 * lm_Tool.R11 + lm_Tcp.R12 * lm_Tool.R21 + lm_Tcp.R13 * lm_Tool.R31;
     lm_Wrist.R12 = lm_Tcp.R11 * lm_Tool.R12 + lm_Tcp.R12 * lm_Tool.R22 + lm_Tcp.R13 * lm_Tool.R32;
     lm_Wrist.R13 = lm_Tcp.R11 * lm_Tool.R13 + lm_Tcp.R12 * lm_Tool.R23 + lm_Tcp.R13 * lm_Tool.R33;
@@ -638,7 +638,7 @@ int Kine_IR_FiveDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
     lm_Wrist.R32 = lm_Tcp.R31 * lm_Tool.R12 + lm_Tcp.R32 * lm_Tool.R22 + lm_Tcp.R33 * lm_Tool.R32;
     lm_Wrist.R33 = lm_Tcp.R31 * lm_Tool.R13 + lm_Tcp.R32 * lm_Tool.R23 + lm_Tcp.R33 * lm_Tool.R33;
 
-    // 位置 //
+    // λ�� //
 	lm_Wrist.X = lm_Tcp.R11 * lm_Tool.X + lm_Tcp.R12 * lm_Tool.Y + lm_Tcp.R13 * lm_Tool.Z
 		+ gdCPos[0] - lm_Wrist.R13 * m_dL5;
 	lm_Wrist.Y = lm_Tcp.R21 * lm_Tool.X + lm_Tcp.R22 * lm_Tool.Y + lm_Tcp.R23 * lm_Tool.Z
@@ -646,8 +646,8 @@ int Kine_IR_FiveDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 	lm_Wrist.Z = lm_Tcp.R31 * lm_Tool.X + lm_Tcp.R32 * lm_Tool.Y + lm_Tcp.R33 * lm_Tool.Z
 		+ (gdCPos[2] - m_dL1) - lm_Wrist.R33 * m_dL5;
 
-    //--------------------- 关节弧度 -------------------------//
-    //------ 转角1 -------//
+    //--------------------- �ؽڻ��� -------------------------//
+    //------ ת��1 -------//
 	ld_temp[0] = atan2(lm_Wrist.Y, lm_Wrist.X);
 	ld_temp[1] = atan2(- lm_Wrist.Y, - lm_Wrist.X);
 	RadInRange(&ld_temp[0], &gdJCurr[0]);
@@ -656,7 +656,7 @@ int Kine_IR_FiveDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 	gd_rad[0][0] = gd_rad[1][0] = ld_temp[0];
 	gd_rad[2][0] = gd_rad[3][0] = ld_temp[1];
 
-    //------ 转角3 ------//
+    //------ ת��3 ------//
     for (i=0; i<2; i++)
     {
         s1 = sin(gd_rad[2*i][0]);
@@ -695,27 +695,27 @@ int Kine_IR_FiveDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 		}
         else
         {
-			li_flag[2*i]   = 1;     // 标志 - 此组解无解
+			li_flag[2*i]   = 1;     // ��־ - ������޽�
 			li_flag[2*i+1] = 1;
         }
     }
     if (li_flag[0] && li_flag[2])
     {
-        return ERR_NOINV; //  腰关节无可用逆解值 //
+        return ERR_NOINV; //  ���ؽ��޿������ֵ //
     }
 
-    //------ 转角2,4,5 ------//
+    //------ ת��2,4,5 ------//
     for (i=0; i<4; i++)
     {
 		if(li_flag[i] == 0)
 		{
-			// 转角1和转角3的正余弦值 //
+			// ת��1��ת��3��������ֵ //
 			s1 = sin(gd_rad[i][0]);
 			c1 = cos(gd_rad[i][0]);
 			s3 = sin(gd_rad[i][2]);
 			c3 = cos(gd_rad[i][2]);
 
-			// 计算转角2和转角3的和 //
+			// ����ת��2��ת��3�ĺ� //
 			ld_temp[0] = c1 * lm_Wrist.X + s1 * lm_Wrist.Y;
 			ld_temp[1] = m_dL3 + m_dL4 + s3 * m_dL2;
 
@@ -724,12 +724,12 @@ int Kine_IR_FiveDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 			s23 = (ld_temp[0] * ld_temp[1] + lm_Wrist.Z * c3 * m_dL2) * ld_temp[2];
 			c23 = (ld_temp[0] * c3 * m_dL2 - lm_Wrist.Z * ld_temp[1]) * ld_temp[2];
     
-			// 计算转角2 //
+			// ����ת��2 //
 			ld_temp[5] = atan2(s23, c23) - gd_rad[i][2];
 			RadInRange(&ld_temp[5], &gdJCurr[1]);
 			gd_rad[i][1] = ld_temp[5];
 
-			// 计算转角4 //			
+			// ����ת��4 //			
 			//s4 = - lm_Wrist.R12 * c1 * c23 - lm_Wrist.R22 * s1 * c23 - lm_Wrist.R32 * s23;
 			//c4 = + lm_Wrist.R12 * s1 - lm_Wrist.R22 * c1;
 			s4 = + lm_Wrist.R13 * s1 - lm_Wrist.R23 * c1;
@@ -738,7 +738,7 @@ int Kine_IR_FiveDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 			RadInRange(&ld_temp[5], &gdJCurr[3]);
 			gd_rad[i][3] = ld_temp[5];
 
-			// 计算转角5 //
+			// ����ת��5 //
 			s4 = sin(gd_rad[i][3]);
 			c4 = cos(gd_rad[i][3]);
 
@@ -761,10 +761,10 @@ int Kine_IR_FiveDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 		}
 	}
 	
-	//------ 最佳结果 ------//
+	//------ ��ѽ�� ------//
 	for (i=0; i<4; i++)
 	{
-		if (0 == li_flag[i])  // 求取相对绝对值
+		if (0 == li_flag[i])  // ��ȡ��Ծ���ֵ
 		{
 			ld_temp[i] = fabs(gd_rad[i][0] - gdJCurr[0] * PI_RAD) + 
 			      	     fabs(gd_rad[i][1] - gdJCurr[1] * PI_RAD) + 
@@ -777,21 +777,21 @@ int Kine_IR_FiveDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 	{
 		if (0 == li_flag[i])
 		{
-			s1 = ld_temp[i]; // 用第一个有效值 来 初始化 中间变量s1
+			s1 = ld_temp[i]; // �õ�һ����Чֵ �� ��ʼ�� �м����s1
 			result = i;
-			break;           // 推出初始化
+			break;           // �Ƴ���ʼ��
 		}
 	}
 	for (i=0; i<4; i++)
 	{
-		if ((0 == li_flag[i]) && (ld_temp[i] <= s1))  // 有效值 | 相对绝对值最小
+		if ((0 == li_flag[i]) && (ld_temp[i] <= s1))  // ��Чֵ | ��Ծ���ֵ��С
 		{
 			//ld_jRad = gd_rad[i];
 			s1 = ld_temp[i];
 			result = i;
 		}
 	}
-	//------ 关节角度 ------//
+	//------ �ؽڽǶ� ------//
 	gdJPos[0] = gd_rad[result][0] * PI_DEG;
 	gdJPos[1] = gd_rad[result][1] * PI_DEG;
 	gdJPos[2] = gd_rad[result][2] * PI_DEG;
@@ -801,24 +801,24 @@ int Kine_IR_FiveDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 	return Ok;
 }
 
-// 拧螺母作业的特殊逆解（摇杆曲柄结构，只求theta2\theta3，其它关节角不变）
+// š��ĸ��ҵ��������⣨ҡ�������ṹ��ֻ��theta2\theta3�������ؽڽǲ��䣩
 int Kine_IR_FiveDoF::IKine_s(double gdCPos[], double gdJCurr[], double gdJPos[])
 {
-	// 位姿 - Tcp矩阵 - 手腕矩阵 - 关节弧度 - 关节角度
+	// λ�� - Tcp���� - ������� - �ؽڻ��� - �ؽڽǶ�
 	// id_cPos - lm_Tcp - lm_Wrist    - ld_jRad     - id_jPos
 	int i;
 	int result;
-	int li_flag[4] = {0};      // 四组解的情况,0为有解
+	int li_flag[4] = {0};      // ���������,0Ϊ�н�
 
 	double s1,c1,s3,c3, s4, c4, s5, c5, s23, c23;
 
-	double ld_temp[8];       // 中间变量
-	MtxKine lm_Wrist;        // 中间变量,手腕矩阵
-	MtxKine lm_Tool;         // 中间变量,工具矩阵
-	MtxKine lm_Tcp;          // 中间变量,TCP矩阵
-	double gd_rad[4][5];     // 中间变量,四组逆解
+	double ld_temp[8];       // �м����
+	MtxKine lm_Wrist;        // �м����,�������
+	MtxKine lm_Tool;         // �м����,���߾���
+	MtxKine lm_Tcp;          // �м����,TCP����
+	double gd_rad[4][5];     // �м����,�������
 
-    //--------------------- TCP矩阵 -------------------------//
+    //--------------------- TCP���� -------------------------//
 	ld_temp[1] = sin(gdCPos[3] * PI_RAD);
 	ld_temp[2] = cos(gdCPos[3] * PI_RAD);
 	ld_temp[3] = sin(gdCPos[4] * PI_RAD);
@@ -836,8 +836,8 @@ int Kine_IR_FiveDoF::IKine_s(double gdCPos[], double gdJCurr[], double gdJPos[])
     lm_Tcp.R32 = ld_temp[4] * ld_temp[5];
     lm_Tcp.R33 = ld_temp[4] * ld_temp[6];
 
-    //--------------------- 工具矩阵 -------------------------//
-    // 计算工具的变换矩阵 //
+    //--------------------- ���߾��� -------------------------//
+    // ���㹤�ߵı任���� //
 	ld_temp[1] = sin(m_dTool[3] * PI_RAD);
 	ld_temp[2] = cos(m_dTool[3] * PI_RAD);
 	ld_temp[3] = sin(m_dTool[4] * PI_RAD);
@@ -855,7 +855,7 @@ int Kine_IR_FiveDoF::IKine_s(double gdCPos[], double gdJCurr[], double gdJPos[])
     lm_Tool.R32 = ld_temp[4] * ld_temp[5];
     lm_Tool.R33 = ld_temp[4] * ld_temp[6];
 
-    // 姿态求逆 //
+    // ��̬���� //
     ld_temp[1] = lm_Tool.R12;
     lm_Tool.R12 = lm_Tool.R21;
     lm_Tool.R21 = ld_temp[1];
@@ -868,7 +868,7 @@ int Kine_IR_FiveDoF::IKine_s(double gdCPos[], double gdJCurr[], double gdJPos[])
     lm_Tool.R23 = lm_Tool.R32;
     lm_Tool.R32 = ld_temp[1];
     
-	// 位置求逆 //
+	// λ������ //
 	lm_Tool.X = -( lm_Tool.R11 * m_dTool[0] + 
 				   lm_Tool.R12 * m_dTool[1] +
                    lm_Tool.R13 * m_dTool[2] );
@@ -879,8 +879,8 @@ int Kine_IR_FiveDoF::IKine_s(double gdCPos[], double gdJCurr[], double gdJPos[])
 				   lm_Tool.R32 * m_dTool[1] +
                    lm_Tool.R33 * m_dTool[2] );
 
-    //--------------------- 手腕矩阵 -------------------------//
-    // 姿态矩阵 //
+    //--------------------- ������� -------------------------//
+    // ��̬���� //
     lm_Wrist.R11 = lm_Tcp.R11 * lm_Tool.R11 + lm_Tcp.R12 * lm_Tool.R21 + lm_Tcp.R13 * lm_Tool.R31;
     lm_Wrist.R12 = lm_Tcp.R11 * lm_Tool.R12 + lm_Tcp.R12 * lm_Tool.R22 + lm_Tcp.R13 * lm_Tool.R32;
     lm_Wrist.R13 = lm_Tcp.R11 * lm_Tool.R13 + lm_Tcp.R12 * lm_Tool.R23 + lm_Tcp.R13 * lm_Tool.R33;
@@ -891,7 +891,7 @@ int Kine_IR_FiveDoF::IKine_s(double gdCPos[], double gdJCurr[], double gdJPos[])
     lm_Wrist.R32 = lm_Tcp.R31 * lm_Tool.R12 + lm_Tcp.R32 * lm_Tool.R22 + lm_Tcp.R33 * lm_Tool.R32;
     lm_Wrist.R33 = lm_Tcp.R31 * lm_Tool.R13 + lm_Tcp.R32 * lm_Tool.R23 + lm_Tcp.R33 * lm_Tool.R33;
 
-    // 位置 //
+    // λ�� //
 	lm_Wrist.X = lm_Tcp.R11 * lm_Tool.X + lm_Tcp.R12 * lm_Tool.Y + lm_Tcp.R13 * lm_Tool.Z
 		+ gdCPos[0] - lm_Wrist.R13 * m_dL5;
 	lm_Wrist.Y = lm_Tcp.R21 * lm_Tool.X + lm_Tcp.R22 * lm_Tool.Y + lm_Tcp.R23 * lm_Tool.Z
@@ -899,8 +899,8 @@ int Kine_IR_FiveDoF::IKine_s(double gdCPos[], double gdJCurr[], double gdJPos[])
 	lm_Wrist.Z = lm_Tcp.R31 * lm_Tool.X + lm_Tcp.R32 * lm_Tool.Y + lm_Tcp.R33 * lm_Tool.Z
 		+ (gdCPos[2] - m_dL1) - lm_Wrist.R33 * m_dL5;
 
-    //--------------------- 关节弧度 -------------------------//
-    //------ 转角1 -------//
+    //--------------------- �ؽڻ��� -------------------------//
+    //------ ת��1 -------//
 	ld_temp[0] = atan2(lm_Wrist.Y, lm_Wrist.X);
 	ld_temp[1] = atan2(- lm_Wrist.Y, - lm_Wrist.X);
 	RadInRange(&ld_temp[0], &gdJCurr[0]);
@@ -909,7 +909,7 @@ int Kine_IR_FiveDoF::IKine_s(double gdCPos[], double gdJCurr[], double gdJPos[])
 	gd_rad[0][0] = gd_rad[1][0] = ld_temp[0] = gdJCurr[0];									//SSS: add "= gdJCurr[0]" keep theta1
 	gd_rad[2][0] = gd_rad[3][0] = ld_temp[1] = gdJCurr[0];									//SSS: add "= gdJCurr[0]" keep theta1
 
-    //------ 转角3 ------//
+    //------ ת��3 ------//
     for (i=0; i<2; i++)
     {
         s1 = sin(gd_rad[2*i][0]);
@@ -948,27 +948,27 @@ int Kine_IR_FiveDoF::IKine_s(double gdCPos[], double gdJCurr[], double gdJPos[])
 		}
         else
         {
-			li_flag[2*i]   = 1;     // 标志 - 此组解无解
+			li_flag[2*i]   = 1;     // ��־ - ������޽�
 			li_flag[2*i+1] = 1;
         }
     }
     if (li_flag[0] && li_flag[2])
     {
-        return ERR_NOINV; //  腰关节无可用逆解值 //
+        return ERR_NOINV; //  ���ؽ��޿������ֵ //
     }
 
-    //------ 转角2,4,5 ------//
+    //------ ת��2,4,5 ------//
     for (i=0; i<4; i++)
     {
 		if(li_flag[i] == 0)
 		{
-			// 转角1和转角3的正余弦值 //
+			// ת��1��ת��3��������ֵ //
 			s1 = sin(gd_rad[i][0]);
 			c1 = cos(gd_rad[i][0]);
 			s3 = sin(gd_rad[i][2]);
 			c3 = cos(gd_rad[i][2]);
 
-			// 计算转角2和转角3的和 //
+			// ����ת��2��ת��3�ĺ� //
 			ld_temp[0] = c1 * lm_Wrist.X + s1 * lm_Wrist.Y;
 			ld_temp[1] = m_dL3 + m_dL4 + s3 * m_dL2;
 
@@ -977,12 +977,12 @@ int Kine_IR_FiveDoF::IKine_s(double gdCPos[], double gdJCurr[], double gdJPos[])
 			s23 = (ld_temp[0] * ld_temp[1] + lm_Wrist.Z * c3 * m_dL2) * ld_temp[2];
 			c23 = (ld_temp[0] * c3 * m_dL2 - lm_Wrist.Z * ld_temp[1]) * ld_temp[2];
     
-			// 计算转角2 //
+			// ����ת��2 //
 			ld_temp[5] = atan2(s23, c23) - gd_rad[i][2];
 			RadInRange(&ld_temp[5], &gdJCurr[1]);
 			gd_rad[i][1] = ld_temp[5];
 
-			// 计算转角4 //			
+			// ����ת��4 //			
 			//s4 = - lm_Wrist.R12 * c1 * c23 - lm_Wrist.R22 * s1 * c23 - lm_Wrist.R32 * s23;
 			//c4 = + lm_Wrist.R12 * s1 - lm_Wrist.R22 * c1;
 			s4 = + lm_Wrist.R13 * s1 - lm_Wrist.R23 * c1;
@@ -991,7 +991,7 @@ int Kine_IR_FiveDoF::IKine_s(double gdCPos[], double gdJCurr[], double gdJPos[])
 			RadInRange(&ld_temp[5], &gdJCurr[3]);
 			gd_rad[i][3] = ld_temp[5] = gdJCurr[3];																//SSS: add "= gdJCurr[3]" keep theta4
 
-			// 计算转角5 //
+			// ����ת��5 //
 			s4 = sin(gd_rad[i][3]);
 			c4 = cos(gd_rad[i][3]);
 
@@ -1014,10 +1014,10 @@ int Kine_IR_FiveDoF::IKine_s(double gdCPos[], double gdJCurr[], double gdJPos[])
 		}
 	}
 	
-	//------ 最佳结果 ------//
+	//------ ��ѽ�� ------//
 	for (i=0; i<4; i++)
 	{
-		if (0 == li_flag[i])  // 求取相对绝对值
+		if (0 == li_flag[i])  // ��ȡ��Ծ���ֵ
 		{
 			ld_temp[i] = fabs(gd_rad[i][0] - gdJCurr[0] * PI_RAD) + 
 			      	     fabs(gd_rad[i][1] - gdJCurr[1] * PI_RAD) + 
@@ -1030,21 +1030,21 @@ int Kine_IR_FiveDoF::IKine_s(double gdCPos[], double gdJCurr[], double gdJPos[])
 	{
 		if (0 == li_flag[i])
 		{
-			s1 = ld_temp[i]; // 用第一个有效值 来 初始化 中间变量s1
+			s1 = ld_temp[i]; // �õ�һ����Чֵ �� ��ʼ�� �м����s1
 			result = i;
-			break;           // 推出初始化
+			break;           // �Ƴ���ʼ��
 		}
 	}
 	for (i=0; i<4; i++)
 	{
-		if ((0 == li_flag[i]) && (ld_temp[i] <= s1))  // 有效值 | 相对绝对值最小
+		if ((0 == li_flag[i]) && (ld_temp[i] <= s1))  // ��Чֵ | ��Ծ���ֵ��С
 		{
 			//ld_jRad = gd_rad[i];
 			s1 = ld_temp[i];
 			result = i;
 		}
 	}
-	//------ 关节角度 ------//
+	//------ �ؽڽǶ� ------//
 	gdJPos[0] = gd_rad[result][0] * PI_DEG;
 	gdJPos[1] = gd_rad[result][1] * PI_DEG;
 	gdJPos[2] = gd_rad[result][2] * PI_DEG;
@@ -1055,14 +1055,14 @@ int Kine_IR_FiveDoF::IKine_s(double gdCPos[], double gdJCurr[], double gdJPos[])
 }
 
 /******************************************************************************
- * 函数：Vel_FKine()
- * 功能：速度逆解, 工具坐标系速度
+ * ������Vel_FKine()
+ * ���ܣ��ٶ����, ��������ϵ�ٶ�
  *
- * 输入：double* gdJPos - 当前关节转角, 5关节, deg
- *       double* gdJVel - 当前关节速度, 5关节, deg/s
- * 输出：double* gdCVel - 末端速度, [vx,vy,vz,wx,wy,wz], mm/s, deg/s
+ * ���룺double* gdJPos - ��ǰ�ؽ�ת��, 5�ؽ�, deg
+ *       double* gdJVel - ��ǰ�ؽ��ٶ�, 5�ؽ�, deg/s
+ * �����double* gdCVel - ĩ���ٶ�, [vx,vy,vz,wx,wy,wz], mm/s, deg/s
  *
- * 返回：int - 0成功, 其他错误
+ * ���أ�int - 0�ɹ�, ��������
  ******************************************************************************/
 int Kine_IR_FiveDoF::Vel_FKine(double gdJPos[], double gdJVel[], double gdCVel[])
 {
@@ -1121,7 +1121,7 @@ int Kine_IR_FiveDoF::Vel_FKine(double gdJPos[], double gdJVel[], double gdCVel[]
 			  + s4 * s5 * v[2]
 			  + c5 * v[3];
 
-	// 转换为角度
+	// ת��Ϊ�Ƕ�
 	gdCVel[3] *= PI_DEG;
 	gdCVel[4] *= PI_DEG;
 	gdCVel[5] *= PI_DEG;
@@ -1130,14 +1130,14 @@ int Kine_IR_FiveDoF::Vel_FKine(double gdJPos[], double gdJVel[], double gdCVel[]
 }
 
 /******************************************************************************
- * 函数：Vel_IKine()
- * 功能：速度逆解
+ * ������Vel_IKine()
+ * ���ܣ��ٶ����
  *
- * 输入：double gdJPos[] - 当前关节转角, 5关节, deg
- *       double gdCVel[] - 当前末端速度, [vx,vy,vz,wx,wy,wz], mm/s, deg/s
- * 输出：double gdJVel[] - 关节速度, 5关节, deg/s
+ * ���룺double gdJPos[] - ��ǰ�ؽ�ת��, 5�ؽ�, deg
+ *       double gdCVel[] - ��ǰĩ���ٶ�, [vx,vy,vz,wx,wy,wz], mm/s, deg/s
+ * �����double gdJVel[] - �ؽ��ٶ�, 5�ؽ�, deg/s
  *
- * 返回：int - 0成功, 其他错误
+ * ���أ�int - 0�ɹ�, ��������
  ******************************************************************************/
 int Kine_IR_FiveDoF::Vel_IKine(double gdJPos[5], double gdCVel[6], double gdJVel[5])
 {
@@ -1163,7 +1163,7 @@ int Kine_IR_FiveDoF::Vel_IKine(double gdJPos[5], double gdCVel[6], double gdJVel
 	lm_cvel.Mtx[5] = gdCVel[5] * PI_RAD;
 	
 	
-    //------------------------- 关节弧度 -----------------------------//
+    //------------------------- �ؽڻ��� -----------------------------//
 	for(i=0; i<5; i++)
 	{		
 		rad[i] = (gdJPos[i]) * PI_RAD;
@@ -1187,7 +1187,7 @@ int Kine_IR_FiveDoF::Vel_IKine(double gdJPos[5], double gdCVel[6], double gdJVel
 	l34 = m_dL3 + m_dL4;
 	l5 = m_dL5;
 	
-	//--------------------------- 第五列 -------------------------------//
+	//--------------------------- ������ -------------------------------//
 	// [0,4]-[5,4]
 	lm_Jacobian.Mtx[0*5 + 4] = l5;
 	lm_Jacobian.Mtx[1*5 + 4] = 0;
@@ -1196,7 +1196,7 @@ int Kine_IR_FiveDoF::Vel_IKine(double gdJPos[5], double gdCVel[6], double gdJVel
 	lm_Jacobian.Mtx[4*5 + 4] = 1;
 	lm_Jacobian.Mtx[5*5 + 4] = 0;
 	
-	//--------------------------- 第四列 -------------------------------//
+	//--------------------------- ������ -------------------------------//
 	// [0,3]-[5,3]
 	lm_Jacobian.Mtx[0*5 + 3] =  0;
 	lm_Jacobian.Mtx[1*5 + 3] =  l5*s5;
@@ -1205,7 +1205,7 @@ int Kine_IR_FiveDoF::Vel_IKine(double gdJPos[5], double gdCVel[6], double gdJVel
 	lm_Jacobian.Mtx[4*5 + 3] =  0;
 	lm_Jacobian.Mtx[5*5 + 3] =  c5;
 	
-	//--------------------------- 第三列 -------------------------------//
+	//--------------------------- ������ -------------------------------//
 	// [0,2]
 	lm_Jacobian.Mtx[0*5 + 2] =  l34*c4*c5 + l5*c4;
 	lm_Jacobian.Mtx[1*5 + 2] = -l34*s4 - l5*s4*c5;
@@ -1214,7 +1214,7 @@ int Kine_IR_FiveDoF::Vel_IKine(double gdJPos[5], double gdCVel[6], double gdJVel
 	lm_Jacobian.Mtx[4*5 + 2] =  c4;
 	lm_Jacobian.Mtx[5*5 + 2] =  s4*s5;
 	
-	//--------------------------- 第二列 -------------------------------//
+	//--------------------------- �ڶ��� -------------------------------//
 	// [0,1]
 	lm_Jacobian.Mtx[0*5 + 1] =  l2*s3*c4*c5 + l34*c4*c5 + l2*c3*s5 + l5*c4;
 	lm_Jacobian.Mtx[1*5 + 1] = -l2*s3*s4 - l34*s4 - l5*s4*c5;
@@ -1223,7 +1223,7 @@ int Kine_IR_FiveDoF::Vel_IKine(double gdJPos[5], double gdCVel[6], double gdJVel
 	lm_Jacobian.Mtx[4*5 + 1] =  c4;	
 	lm_Jacobian.Mtx[5*5 + 1] =  s4*s5;
 	
-	//---------------------------- 第一列 --------------------------------//
+	//---------------------------- ��һ�� --------------------------------//
 	// [0,0]
 	lm_Jacobian.Mtx[0*5 + 0] = -l2*c2*s4*c5 - l34*s23*s4*c5 - l5*s23*s4;
 	lm_Jacobian.Mtx[1*5 + 0] = -l2*c2*c4 - l34*s23*c4 - l5*(s23*c4*c5+c23*s5);
@@ -1243,7 +1243,7 @@ int Kine_IR_FiveDoF::Vel_IKine(double gdJPos[5], double gdCVel[6], double gdJVel
 	}
 
 /*
-	double c2 = cos((gdJPos[1]) * PI_RAD);  // 转换为弧度
+	double c2 = cos((gdJPos[1]) * PI_RAD);  // ת��Ϊ����
 	double s23 = sin((gdJPos[1] + gdJPos[2]) * PI_RAD);
 	double c23 = cos((gdJPos[1] + gdJPos[2]) * PI_RAD);
 	double s3 = sin(gdJPos[2] * PI_RAD);
@@ -1310,7 +1310,7 @@ int Kine_IR_FiveDoF::Vel_IKine(double gdJPos[5], double gdCVel[6], double gdJVel
 	gdJVel[3] = wz * c5 - wx * s5 + c23 * gdJVel[0];
 	gdJVel[4] = wy + s23 * s4 * gdJVel[0] - c4 * (gdJVel[1] + gdJVel[2]);
 	
-	// 转换为角度
+	// ת��Ϊ�Ƕ�
 	gdJVel[0] *= PI_DEG;
 	gdJVel[1] *= PI_DEG;
 	gdJVel[2] *= PI_DEG;
@@ -1319,7 +1319,7 @@ int Kine_IR_FiveDoF::Vel_IKine(double gdJPos[5], double gdCVel[6], double gdJVel
 */
 
 /*
-	double c2 = cos(gdJPos[1] * PI_RAD);  // 转换为弧度
+	double c2 = cos(gdJPos[1] * PI_RAD);  // ת��Ϊ����
 	double s23 = sin((gdJPos[1] + gdJPos[2]) * PI_RAD);
 	double c23 = cos((gdJPos[1] + gdJPos[2]) * PI_RAD);
 	double s3 = sin(gdJPos[2] * PI_RAD);
@@ -1333,14 +1333,14 @@ int Kine_IR_FiveDoF::Vel_IKine(double gdJPos[5], double gdCVel[6], double gdJVel
 	double s6 = 0;
 	double c6 = 1;
 	
-	double vel[6];       // 笛卡尔速度
-	double jacobian[36]; // 雅克比矩阵数组
+	double vel[6];       // �ѿ����ٶ�
+	double jacobian[36]; // �ſ˱Ⱦ�������
 
-	Matrix lm_vel;   // TCP速度矩阵
-	Matrix lm_jac;   // 雅克比矩阵
-	Matrix lm_jv(6, 1);    // 关节速度矩阵
+	Matrix lm_vel;   // TCP�ٶȾ���
+	Matrix lm_jac;   // �ſ˱Ⱦ���
+	Matrix lm_jv(6, 1);    // �ؽ��ٶȾ���
 
-	// TCP速度
+	// TCP�ٶ�
 	vel[0] = gdCVel[0];
 	vel[1] = gdCVel[1];
 	vel[2] = gdCVel[2];
@@ -1348,7 +1348,7 @@ int Kine_IR_FiveDoF::Vel_IKine(double gdJPos[5], double gdCVel[6], double gdJVel
 	vel[4] = gdCVel[4] * PI_RAD;
 	vel[5] = gdCVel[5] * PI_RAD;
 
-	// TCP速度矩阵初始化
+	// TCP�ٶȾ����ʼ��
 	lm_vel.Init(6, 1, vel);
 
 	// vx
@@ -1415,10 +1415,10 @@ int Kine_IR_FiveDoF::Vel_IKine(double gdJPos[5], double gdCVel[6], double gdJVel
 	jacobian[34] = 0;
 	jacobian[35] = 1;
 
-	// 雅克比矩阵初始化
+	// �ſ˱Ⱦ����ʼ��
 	lm_jac.Init(6, 6, jacobian);
 
-	Matrix lm_inv_jac(6, 6); // 雅克比你矩阵
+	Matrix lm_inv_jac(6, 6); // �ſ˱������
 
 	if (0 != Inv(&lm_jac, &lm_inv_jac))
 	{
@@ -1427,7 +1427,7 @@ int Kine_IR_FiveDoF::Vel_IKine(double gdJPos[5], double gdCVel[6], double gdJVel
 
 	lm_jv = lm_inv_jac * lm_vel;
 
-	// 转换为角度
+	// ת��Ϊ�Ƕ�
 	gdJVel[0] = lm_jv.Get(0, 0) * PI_DEG;
 	gdJVel[1] = lm_jv.Get(1, 0) * PI_DEG;
 	gdJVel[2] = lm_jv.Get(2, 0) * PI_DEG;
@@ -1440,10 +1440,10 @@ int Kine_IR_FiveDoF::Vel_IKine(double gdJPos[5], double gdCVel[6], double gdJVel
 }
 
 /******************************************************************************
- * 函数：Set_Length()
- * 功能：设置杆长
+ * ������Set_Length()
+ * ���ܣ����ø˳�
  *
- * 输入：double gdLen[] - 杆长L1,L2,L3,L4,L5,L6
+ * ���룺double gdLen[] - �˳�L1,L2,L3,L4,L5,L6
  ******************************************************************************/
 void Kine_IR_SixDoF::Set_Length(double gdLen[])
 {
@@ -1464,28 +1464,28 @@ void Kine_IR_SixDoF::Set_Tool(double gdTool[])
 }
 
 /******************************************************************************
- * 函数：FKine()
- * 功能：正解
+ * ������FKine()
+ * ���ܣ�����
  *
- * 输入：double* gdJPos - 关节转角, 5关节
- * 输出：double* gdCPos - 正解位姿, (x,y,z,w,p,r)
+ * ���룺double* gdJPos - �ؽ�ת��, 5�ؽ�
+ * �����double* gdCPos - ����λ��, (x,y,z,w,p,r)
  *
- * 返回：int - 0成功,
+ * ���أ�int - 0�ɹ�,
  ******************************************************************************/
 int Kine_IR_SixDoF::FKine(double gdJPos[], double gdCPos[])
 {
-	// 关节角度 - 关节弧度 - 手腕矩阵 - Tcp矩阵 - 位姿
+	// �ؽڽǶ� - �ؽڻ��� - ������� - Tcp���� - λ��
 	// id_jPos  -   jRad   - lm_Wrist - lm_Tcp  - id_cPos
 	double ld_jRad[6];// = gd_rad[0];
 	
 	double c23, s23;
 	
-	double ld_temp[8];     // 中间变量
-	MtxKine lm_Wrist;      // 中间变量,手腕矩阵
-	MtxKine lm_Tool;       // 中间变量,工具矩阵
-	MtxKine lm_Tcp;        // 中间变量,TCP矩阵
+	double ld_temp[8];     // �м����
+	MtxKine lm_Wrist;      // �м����,�������
+	MtxKine lm_Tool;       // �м����,���߾���
+	MtxKine lm_Tcp;        // �м����,TCP����
 
-    //--------------------- 关节弧度 -------------------------//
+    //--------------------- �ؽڻ��� -------------------------//
 	ld_jRad[0] = gdJPos[0] * PI_RAD;
 	ld_jRad[1] = gdJPos[1] * PI_RAD;
 	ld_jRad[2] = gdJPos[2] * PI_RAD;
@@ -1493,7 +1493,7 @@ int Kine_IR_SixDoF::FKine(double gdJPos[], double gdCPos[])
 	ld_jRad[4] = gdJPos[4] * PI_RAD;
 	ld_jRad[5] = gdJPos[5] * PI_RAD;
 
-    //--------------------- 手腕矩阵 -------------------------//
+    //--------------------- ������� -------------------------//
     c23 = cos(ld_jRad[1]+ld_jRad[2]);
     s23 = sin(ld_jRad[1]+ld_jRad[2]);	
 
@@ -1503,15 +1503,15 @@ int Kine_IR_SixDoF::FKine(double gdJPos[], double gdCPos[])
 	ld_temp[2] = - cos(ld_jRad[0]) * c23 * sin(ld_jRad[3])
 				 + sin(ld_jRad[0]) * cos(ld_jRad[3]);
 
-    // 计算r11 //
+    // ����r11 //
 	lm_Wrist.R11 = ld_temp[1] * cos(ld_jRad[5])
 				 + ld_temp[2] * sin(ld_jRad[5]);
   
-     // 计算r12 //
+     // ����r12 //
 	lm_Wrist.R12 = - ld_temp[1] * sin(ld_jRad[5])
 				   + ld_temp[2] * cos(ld_jRad[5]);
 
-     // 计算r13 //
+     // ����r13 //
 	lm_Wrist.R13 = cos(ld_jRad[0]) * c23 * cos(ld_jRad[3]) * sin(ld_jRad[4]) 
 		+ sin(ld_jRad[0]) * sin(ld_jRad[3]) * sin(ld_jRad[4])
 		+ cos(ld_jRad[0]) * s23 * cos(ld_jRad[4]);
@@ -1522,15 +1522,15 @@ int Kine_IR_SixDoF::FKine(double gdJPos[], double gdCPos[])
 	ld_temp[2] = - sin(ld_jRad[0]) * c23 * sin(ld_jRad[3])
 		- cos(ld_jRad[0]) * cos(ld_jRad[3]);
 
-    // 计算r21 //
+    // ����r21 //
 	lm_Wrist.R21 = ld_temp[1] * cos(ld_jRad[5])
 				 + ld_temp[2] * sin(ld_jRad[5]);
 
-    // 计算r22 //    
+    // ����r22 //    
 	lm_Wrist.R22 = - ld_temp[1] * sin(ld_jRad[5])
 				   + ld_temp[2] * cos(ld_jRad[5]);
         
-    // 计算r23 //    
+    // ����r23 //    
 	lm_Wrist.R23 = sin(ld_jRad[0]) * c23 * cos(ld_jRad[3]) * sin(ld_jRad[4]) 
 		- cos(ld_jRad[0]) * sin(ld_jRad[3]) * sin(ld_jRad[4])
 		+ sin(ld_jRad[0]) * s23 * cos(ld_jRad[4]);
@@ -1539,35 +1539,35 @@ int Kine_IR_SixDoF::FKine(double gdJPos[], double gdCPos[])
 		+ c23 * sin(ld_jRad[4]);
 	ld_temp[2] = - s23 * sin(ld_jRad[3]);
 
-    // 计算r31 //
+    // ����r31 //
 	lm_Wrist.R31 = ld_temp[1] * cos(ld_jRad[5])
 				 + ld_temp[2] * sin(ld_jRad[5]);
 
-    // 计算r32 //    
+    // ����r32 //    
 	lm_Wrist.R32 = - ld_temp[1] * sin(ld_jRad[5])
 				   + ld_temp[2] * cos(ld_jRad[5]);
     
-    // 计算r33 //
+    // ����r33 //
 	lm_Wrist.R33 = + s23 * cos(ld_jRad[3]) * sin(ld_jRad[4]) 
         - c23 * cos(ld_jRad[4]);
 
-    // 计算x //
+    // ����x //
 	lm_Wrist.X = lm_Wrist.R13 * (m_dL5 +m_dL6)
 		+ cos(ld_jRad[0]) * s23 * (m_dL3 + m_dL4)
 		+ cos(ld_jRad[0]) * cos(ld_jRad[1]) * m_dL2;
 
-    // 计算y //
+    // ����y //
 	lm_Wrist.Y = lm_Wrist.R23 * (m_dL5 +m_dL6)
 		+ sin(ld_jRad[0]) * s23 * (m_dL3 + m_dL4)
 		+ sin(ld_jRad[0]) * cos(ld_jRad[1]) * m_dL2;
     
-    // 计算z //
+    // ����z //
 	lm_Wrist.Z = lm_Wrist.R33 * (m_dL5 +m_dL6)
 		- c23 * (m_dL3 + m_dL4)
 		+ sin(ld_jRad[1]) * m_dL2;
 
-    //--------------------- Tcp矩阵 -------------------------//
-    // 计算工具的变换矩阵 //
+    //--------------------- Tcp���� -------------------------//
+    // ���㹤�ߵı任���� //
 	ld_temp[1] = sin(m_dTool[3] * PI_RAD);
 	ld_temp[2] = cos(m_dTool[3] * PI_RAD);
 	ld_temp[3] = sin(m_dTool[4] * PI_RAD);
@@ -1585,7 +1585,7 @@ int Kine_IR_SixDoF::FKine(double gdJPos[], double gdCPos[])
     lm_Tool.R32 = ld_temp[4] * ld_temp[5];
     lm_Tool.R33 = ld_temp[4] * ld_temp[6];
 
-    // 计算Tcp姿态矩阵的参数 //
+    // ����Tcp��̬����Ĳ��� //
     lm_Tcp.R11 = lm_Wrist.R11 * lm_Tool.R11 + lm_Wrist.R12 * lm_Tool.R21 + lm_Wrist.R13 * lm_Tool.R31;
     lm_Tcp.R21 = lm_Wrist.R21 * lm_Tool.R11 + lm_Wrist.R22 * lm_Tool.R21 + lm_Wrist.R23 * lm_Tool.R31;
     lm_Tcp.R31 = lm_Wrist.R31 * lm_Tool.R11 + lm_Wrist.R32 * lm_Tool.R21 + lm_Wrist.R33 * lm_Tool.R31;
@@ -1594,7 +1594,7 @@ int Kine_IR_SixDoF::FKine(double gdJPos[], double gdCPos[])
     lm_Tcp.R12 = lm_Wrist.R11 * lm_Tool.R12 + lm_Wrist.R12 * lm_Tool.R22 + lm_Wrist.R13 * lm_Tool.R32;
     lm_Tcp.R22 = lm_Wrist.R21 * lm_Tool.R12 + lm_Wrist.R22 * lm_Tool.R22 + lm_Wrist.R23 * lm_Tool.R32;
 
-    // 计算Tcp位置 //
+    // ����Tcpλ�� //
 	lm_Tcp.X = lm_Wrist.X + lm_Wrist.R11 * (m_dTool[0])
                           + lm_Wrist.R12 * (m_dTool[1])
                           + lm_Wrist.R13 * (m_dTool[2]);
@@ -1605,8 +1605,8 @@ int Kine_IR_SixDoF::FKine(double gdJPos[], double gdCPos[])
                           + lm_Wrist.R32 * (m_dTool[1])
                           + lm_Wrist.R33 * (m_dTool[2]);
 
-    //--------------------- Tcp位姿 -------------------------//
-    // 计算工具坐标系RPY角 - rad //
+    //--------------------- Tcpλ�� -------------------------//
+    // ���㹤������ϵRPY�� - rad //
 	ld_temp[5] = atan2(-lm_Tcp.R31, sqrt(lm_Tcp.R11 * lm_Tcp.R11 + lm_Tcp.R21 * lm_Tcp.R21));
 
     if (fabs(ld_temp[5] - PI / 2) < RT_LITTLE)
@@ -1659,32 +1659,32 @@ int Kine_IR_SixDoF::FKine(double gdJPos[], double gdCPos[])
 }
 
 /******************************************************************************
- * 函数：IKine()
- * 功能：逆解
+ * ������IKine()
+ * ���ܣ����
  *
- * 输入：double* gdCPos  - 位姿数组, (x,y,z,w,p,r)
- *       double* gdJCurr - 当前关节转角, 5关节
- * 输出：double* id_jPos  - 逆解关节转角, 5关节
+ * ���룺double* gdCPos  - λ������, (x,y,z,w,p,r)
+ *       double* gdJCurr - ��ǰ�ؽ�ת��, 5�ؽ�
+ * �����double* id_jPos  - ���ؽ�ת��, 5�ؽ�
  *
- * 返回：int - 0成功, 其他错误
+ * ���أ�int - 0�ɹ�, ��������
  ******************************************************************************/
 int Kine_IR_SixDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 {
-	// 位姿 - Tcp矩阵 - 手腕矩阵 - 关节弧度 - 关节角度
+	// λ�� - Tcp���� - ������� - �ؽڻ��� - �ؽڽǶ�
 	// id_cPos - lm_Tcp - lm_Wrist    - ld_jRad     - id_jPos
 	int i;
 	int result;
-	int li_flag[8] = {0};      // 四组解的情况,0为有解
+	int li_flag[8] = {0};      // ���������,0Ϊ�н�
 
 	double s1,c1,s3,c3, s4, c4, s5, c5, s23, c23, s6, c6;
 
-	double ld_temp[8];       // 中间变量
-	MtxKine lm_Wrist;        // 中间变量,手腕矩阵
-	MtxKine lm_Tool;         // 中间变量,工具矩阵
-	MtxKine lm_Tcp;          // 中间变量,TCP矩阵
-	double gd_rad[8][6];     // 中间变量，四组逆解
+	double ld_temp[8];       // �м����
+	MtxKine lm_Wrist;        // �м����,�������
+	MtxKine lm_Tool;         // �м����,���߾���
+	MtxKine lm_Tcp;          // �м����,TCP����
+	double gd_rad[8][6];     // �м�������������
 
-    //--------------------- TCP矩阵 -------------------------//
+    //--------------------- TCP���� -------------------------//
 	ld_temp[1] = sin(gdCPos[3] * PI_RAD);
 	ld_temp[2] = cos(gdCPos[3] * PI_RAD);
 	ld_temp[3] = sin(gdCPos[4] * PI_RAD);
@@ -1702,8 +1702,8 @@ int Kine_IR_SixDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
     lm_Tcp.R32 = ld_temp[4] * ld_temp[5];
     lm_Tcp.R33 = ld_temp[4] * ld_temp[6];
 
-    //--------------------- 工具矩阵 -------------------------//
-    // 计算工具的变换矩阵 //
+    //--------------------- ���߾��� -------------------------//
+    // ���㹤�ߵı任���� //
 	ld_temp[1] = sin(m_dTool[3] * PI_RAD);
 	ld_temp[2] = cos(m_dTool[3] * PI_RAD);
 	ld_temp[3] = sin(m_dTool[4] * PI_RAD);
@@ -1721,7 +1721,7 @@ int Kine_IR_SixDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
     lm_Tool.R32 = ld_temp[4] * ld_temp[5];
     lm_Tool.R33 = ld_temp[4] * ld_temp[6];
 
-    // 姿态求逆 //
+    // ��̬���� //
     ld_temp[1] = lm_Tool.R12;
     lm_Tool.R12 = lm_Tool.R21;
     lm_Tool.R21 = ld_temp[1];
@@ -1734,7 +1734,7 @@ int Kine_IR_SixDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
     lm_Tool.R23 = lm_Tool.R32;
     lm_Tool.R32 = ld_temp[1];
     
-	// 位置求逆 //
+	// λ������ //
 	lm_Tool.X = -( lm_Tool.R11 * m_dTool[0] + 
 				   lm_Tool.R12 * m_dTool[1] +
                    lm_Tool.R13 * m_dTool[2] );
@@ -1745,8 +1745,8 @@ int Kine_IR_SixDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 				   lm_Tool.R32 * m_dTool[1] +
                    lm_Tool.R33 * m_dTool[2] );
 
-    //--------------------- 手腕矩阵 -------------------------//
-    // 姿态矩阵 //
+    //--------------------- ������� -------------------------//
+    // ��̬���� //
     lm_Wrist.R11 = lm_Tcp.R11 * lm_Tool.R11 + lm_Tcp.R12 * lm_Tool.R21 + lm_Tcp.R13 * lm_Tool.R31;
     lm_Wrist.R12 = lm_Tcp.R11 * lm_Tool.R12 + lm_Tcp.R12 * lm_Tool.R22 + lm_Tcp.R13 * lm_Tool.R32;
     lm_Wrist.R13 = lm_Tcp.R11 * lm_Tool.R13 + lm_Tcp.R12 * lm_Tool.R23 + lm_Tcp.R13 * lm_Tool.R33;
@@ -1757,7 +1757,7 @@ int Kine_IR_SixDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
     lm_Wrist.R32 = lm_Tcp.R31 * lm_Tool.R12 + lm_Tcp.R32 * lm_Tool.R22 + lm_Tcp.R33 * lm_Tool.R32;
     lm_Wrist.R33 = lm_Tcp.R31 * lm_Tool.R13 + lm_Tcp.R32 * lm_Tool.R23 + lm_Tcp.R33 * lm_Tool.R33;
 
-    // 位置 //
+    // λ�� //
 	lm_Wrist.X = lm_Tcp.R11 * lm_Tool.X + lm_Tcp.R12 * lm_Tool.Y + lm_Tcp.R13 * lm_Tool.Z
 		+ gdCPos[0] - lm_Wrist.R13 * (m_dL5 + m_dL6);
 	lm_Wrist.Y = lm_Tcp.R21 * lm_Tool.X + lm_Tcp.R22 * lm_Tool.Y + lm_Tcp.R23 * lm_Tool.Z
@@ -1765,8 +1765,8 @@ int Kine_IR_SixDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 	lm_Wrist.Z = lm_Tcp.R31 * lm_Tool.X + lm_Tcp.R32 * lm_Tool.Y + lm_Tcp.R33 * lm_Tool.Z
 		+ (gdCPos[2] - m_dL1) - lm_Wrist.R33 * (m_dL5 + m_dL6);
 
-    //--------------------- 关节弧度 -------------------------//
-    //------ 转角1 -------//
+    //--------------------- �ؽڻ��� -------------------------//
+    //------ ת��1 -------//
 	ld_temp[0] = atan2(lm_Wrist.Y, lm_Wrist.X);
 	ld_temp[1] = atan2(- lm_Wrist.Y, - lm_Wrist.X);
 	RadInRange(&ld_temp[0], &gdJCurr[0]);
@@ -1775,7 +1775,7 @@ int Kine_IR_SixDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 	gd_rad[0][0] = gd_rad[1][0] = ld_temp[0];
 	gd_rad[2][0] = gd_rad[3][0] = ld_temp[1];
 
-    //------ 转角3 ------//
+    //------ ת��3 ------//
     for (i=0; i<2; i++)
     {
         s1 = sin(gd_rad[2*i][0]);
@@ -1814,27 +1814,27 @@ int Kine_IR_SixDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 		}
         else
         {
-			li_flag[2*i]   = 1;     // 标志 - 此组解无解
+			li_flag[2*i]   = 1;     // ��־ - ������޽�
 			li_flag[2*i+1] = 1;
         }
     }
     if (li_flag[0] && li_flag[2])
     {
-        return ERR_NOINV; //  腰关节无可用逆解值 //
+        return ERR_NOINV; //  ���ؽ��޿������ֵ //
     }
 
-    //------ 转角2,4,5,6 ------//
+    //------ ת��2,4,5,6 ------//
     for (i=0; i<4; i++)
     {
 		if(li_flag[i] == 0)
 		{
-			// 转角1和转角3的正余弦值 //
+			// ת��1��ת��3��������ֵ //
 			s1 = sin(gd_rad[i][0]);
 			c1 = cos(gd_rad[i][0]);
 			s3 = sin(gd_rad[i][2]);
 			c3 = cos(gd_rad[i][2]);
 
-			// 计算转角2和转角3的和 //
+			// ����ת��2��ת��3�ĺ� //
 			ld_temp[0] = c1 * lm_Wrist.X + s1 * lm_Wrist.Y;
 			ld_temp[1] = m_dL3 + m_dL4 + s3 * m_dL2;
 
@@ -1843,19 +1843,19 @@ int Kine_IR_SixDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 			s23 = (ld_temp[0] * ld_temp[1] + lm_Wrist.Z * c3 * m_dL2) * ld_temp[2];
 			c23 = (ld_temp[0] * c3 * m_dL2 - lm_Wrist.Z * ld_temp[1]) * ld_temp[2];
     
-			// 计算转角2 //
+			// ����ת��2 //
 			ld_temp[5] = atan2(s23, c23) - gd_rad[i][2];
 			RadInRange(&ld_temp[5], &gdJCurr[1]);
 			gd_rad[i][1] = ld_temp[5];
 
-			// 计算转角4 //			
+			// ����ת��4 //			
 			s4 = + lm_Wrist.R13 * s1 - lm_Wrist.R23 * c1;
 			c4 = + lm_Wrist.R13 * c1 * c23 + lm_Wrist.R23 * s1 * c23 + lm_Wrist.R33 * s23;
 			ld_temp[5] = atan2(s4, c4);
 			RadInRange(&ld_temp[5], &gdJCurr[3]);
 			gd_rad[i][3] = ld_temp[5];
 
-			// 计算转角5 //
+			// ����ת��5 //
 			s4 = sin(gd_rad[i][3]);
 			c4 = cos(gd_rad[i][3]);
 
@@ -1869,7 +1869,7 @@ int Kine_IR_SixDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 			RadInRange(&ld_temp[5], &gdJCurr[4]);
 			gd_rad[i][4] = ld_temp[5];
 
-			// 计算转角6 //
+			// ����ת��6 //
 			s6 =  lm_Wrist.R11 * (- c1 * c23 * s4 + s1 * c4)
 				+ lm_Wrist.R21 * (- s1 * c23 * s4 - c1 * c4)
 				+ lm_Wrist.R31 * (- s23 * s4);
@@ -1881,7 +1881,7 @@ int Kine_IR_SixDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 			RadInRange(&ld_temp[6], &gdJCurr[5]);
 			gd_rad[i][5] = ld_temp[6];
 
-			// 第4、6关节“翻转” //
+			// ��4��6�ؽڡ���ת�� //
 			gd_rad[i+4][0] = gd_rad[i][0];
 			gd_rad[i+4][1] = gd_rad[i][1];
 			gd_rad[i+4][2] = gd_rad[i][2];
@@ -1898,10 +1898,10 @@ int Kine_IR_SixDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 		}
 	}
 	
-	//------ 最佳结果 ------//
+	//------ ��ѽ�� ------//
 	for (i=0; i<8; i++)
 	{
-		if (0 == li_flag[i])  // 求取相对绝对值
+		if (0 == li_flag[i])  // ��ȡ��Ծ���ֵ
 		{
 			ld_temp[i] = fabs(gd_rad[i][0] - gdJCurr[0] * PI_RAD) + 
 			      	     fabs(gd_rad[i][1] - gdJCurr[1] * PI_RAD) + 
@@ -1914,21 +1914,21 @@ int Kine_IR_SixDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 	{
 		if (0 == li_flag[i])
 		{
-			s1 = ld_temp[i]; // 用第一个有效值 来 初始化 中间变量s1
+			s1 = ld_temp[i]; // �õ�һ����Чֵ �� ��ʼ�� �м����s1
 			result = i;
-			break;           // 推出初始化
+			break;           // �Ƴ���ʼ��
 		}
 	}
 	for (i=0; i<8; i++)
 	{
-		if ((0 == li_flag[i]) && (ld_temp[i] <= s1))  // 有效值 | 相对绝对值最小
+		if ((0 == li_flag[i]) && (ld_temp[i] <= s1))  // ��Чֵ | ��Ծ���ֵ��С
 		{
 			//ld_jRad = gd_rad[i];
 			s1 = ld_temp[i];
 			result = i;
 		}
 	}
-	//------ 关节角度 ------//
+	//------ �ؽڽǶ� ------//
 	gdJPos[0] = gd_rad[result][0] * PI_DEG;
 	gdJPos[1] = gd_rad[result][1] * PI_DEG;
 	gdJPos[2] = gd_rad[result][2] * PI_DEG;
@@ -1939,14 +1939,14 @@ int Kine_IR_SixDoF::IKine(double gdCPos[], double gdJCurr[], double gdJPos[])
 	return Ok;
 }
 /******************************************************************************
- * 函数：Vel_FKine()
- * 功能：速度逆解, 工具坐标系速度
+ * ������Vel_FKine()
+ * ���ܣ��ٶ����, ��������ϵ�ٶ�
  *
- * 输入：double* gdJPos - 当前关节转角, 5关节, deg
- *       double* gdJVel - 当前关节速度, 5关节, deg/s
- * 输出：double* gdCVel - 末端速度, [vx,vy,vz,wx,wy,wz], mm/s, deg/s
+ * ���룺double* gdJPos - ��ǰ�ؽ�ת��, 5�ؽ�, deg
+ *       double* gdJVel - ��ǰ�ؽ��ٶ�, 5�ؽ�, deg/s
+ * �����double* gdCVel - ĩ���ٶ�, [vx,vy,vz,wx,wy,wz], mm/s, deg/s
  *
- * 返回：int - 0成功, 其他错误
+ * ���أ�int - 0�ɹ�, ��������
  ******************************************************************************/
 int Kine_IR_SixDoF::Vel_FKine(IN double gdJPos[6], IN double gdJVel[6], OUT double gdCVel[6])
 {
@@ -2030,7 +2030,7 @@ int Kine_IR_SixDoF::Vel_FKine(IN double gdJPos[6], IN double gdJVel[6], OUT doub
 		+ c5 * v[3]
 		+ v[5];
 	
-	// 转换为角度
+	// ת��Ϊ�Ƕ�
 	gdCVel[3] *= PI_DEG;
 	gdCVel[4] *= PI_DEG;
 	gdCVel[5] *= PI_DEG;
@@ -2038,18 +2038,18 @@ int Kine_IR_SixDoF::Vel_FKine(IN double gdJPos[6], IN double gdJVel[6], OUT doub
 	return Ok;
 }
 /******************************************************************************
- * 函数：Vel_IKine()
- * 功能：速度逆解
+ * ������Vel_IKine()
+ * ���ܣ��ٶ����
  *
- * 输入：double gdJPos[] - 当前关节转角, 5关节, deg
- *       double gdCVel[] - 当前末端速度, [vx,vy,vz,wx,wy,wz], mm/s, deg/s
- * 输出：double gdJVel[] - 关节速度, 5关节, deg/s
+ * ���룺double gdJPos[] - ��ǰ�ؽ�ת��, 5�ؽ�, deg
+ *       double gdCVel[] - ��ǰĩ���ٶ�, [vx,vy,vz,wx,wy,wz], mm/s, deg/s
+ * �����double gdJVel[] - �ؽ��ٶ�, 5�ؽ�, deg/s
  *
- * 返回：int - 0成功, 其他错误
+ * ���أ�int - 0�ɹ�, ��������
  ******************************************************************************/
 int Kine_IR_SixDoF::Vel_IKine(IN double gdJPos[6], IN double gdCVel[6], OUT double gdJVel[6])
 {
-	double c2 = cos(gdJPos[1] * PI_RAD);  // 转换为弧度
+	double c2 = cos(gdJPos[1] * PI_RAD);  // ת��Ϊ����
 	double s23 = sin((gdJPos[1] + gdJPos[2]) * PI_RAD);
 	double c23 = cos((gdJPos[1] + gdJPos[2]) * PI_RAD);
 	double s3 = sin(gdJPos[2] * PI_RAD);
@@ -2061,14 +2061,14 @@ int Kine_IR_SixDoF::Vel_IKine(IN double gdJPos[6], IN double gdCVel[6], OUT doub
 	double s6 = sin(gdJPos[5] * PI_RAD);
 	double c6 = cos(gdJPos[5] * PI_RAD);
 	
-	double vel[6];       // 笛卡尔速度
-	double jacobian[36]; // 雅克比矩阵数组
+	double vel[6];       // �ѿ����ٶ�
+	double jacobian[36]; // �ſ˱Ⱦ�������
 
-	Matrix lm_vel;   // TCP速度矩阵
-	Matrix lm_jac;   // 雅克比矩阵
-	Matrix lm_jv(6, 1);    // 关节速度矩阵
+	Matrix lm_vel;   // TCP�ٶȾ���
+	Matrix lm_jac;   // �ſ˱Ⱦ���
+	Matrix lm_jv(6, 1);    // �ؽ��ٶȾ���
 
-	// TCP速度
+	// TCP�ٶ�
 	vel[0] = gdCVel[0];
 	vel[1] = gdCVel[1];
 	vel[2] = gdCVel[2];
@@ -2076,7 +2076,7 @@ int Kine_IR_SixDoF::Vel_IKine(IN double gdJPos[6], IN double gdCVel[6], OUT doub
 	vel[4] = gdCVel[4] * PI_RAD;
 	vel[5] = gdCVel[5] * PI_RAD;
 
-	// TCP速度矩阵初始化
+	// TCP�ٶȾ����ʼ��
 	lm_vel.Init(6, 1, vel);
 
 	// vx
@@ -2143,10 +2143,10 @@ int Kine_IR_SixDoF::Vel_IKine(IN double gdJPos[6], IN double gdCVel[6], OUT doub
 	jacobian[34] = 0;
 	jacobian[35] = 1;
 
-	// 雅克比矩阵初始化
+	// �ſ˱Ⱦ����ʼ��
 	lm_jac.Init(6, 6, jacobian);
 
-	Matrix lm_inv_jac(6, 6); // 雅克比你矩阵
+	Matrix lm_inv_jac(6, 6); // �ſ˱������
 
 	if (0 != Inv(&lm_jac, &lm_inv_jac))
 	{
@@ -2155,7 +2155,7 @@ int Kine_IR_SixDoF::Vel_IKine(IN double gdJPos[6], IN double gdCVel[6], OUT doub
 
 	lm_jv = lm_inv_jac * lm_vel;
 
-	// 转换为角度
+	// ת��Ϊ�Ƕ�
 	gdJVel[0] = lm_jv.Get(0, 0) * PI_DEG;
 	gdJVel[1] = lm_jv.Get(1, 0) * PI_DEG;
 	gdJVel[2] = lm_jv.Get(2, 0) * PI_DEG;
@@ -2167,10 +2167,10 @@ int Kine_IR_SixDoF::Vel_IKine(IN double gdJPos[6], IN double gdCVel[6], OUT doub
 }
 
 /******************************************************************************
- * 函数：Set_Length()
- * 功能：设置杆长
+ * ������Set_Length()
+ * ���ܣ����ø˳�
  *
- * 输入：gdLen - 杆长L1、L2、L3、L4、L5
+ * ���룺gdLen - �˳�L1��L2��L3��L4��L5
  ******************************************************************************/
 void Kine_CR_FiveDoF_G1::Set_Length(double gdLen[5])
 {
@@ -2182,37 +2182,37 @@ void Kine_CR_FiveDoF_G1::Set_Length(double gdLen[5])
 }
 
 /******************************************************************************
- * 函数：FKine()
- * 功能：正解
+ * ������FKine()
+ * ���ܣ�����
  *
- * 输入：double gdJPos[] - 关节转角, 5关节
- * 输出：double gdCPos[] - 正解位姿, (x,y,z,w,p,r)
+ * ���룺double gdJPos[] - �ؽ�ת��, 5�ؽ�
+ * �����double gdCPos[] - ����λ��, (x,y,z,w,p,r)
  *
- * 返回：int - 0成功,
+ * ���أ�int - 0�ɹ�,
  ******************************************************************************/
 int Kine_CR_FiveDoF_G1::FKine(double gdJPos[], double gdCPos[])
 {
-	// 关节角度 - 关节弧度 - Tcp矩阵 - 位姿
+	// �ؽڽǶ� - �ؽڻ��� - Tcp���� - λ��
 	// id_jPos  -   jRad   - lm_Tcp  - id_cPos
 	int i;
-	double jrad[5]; // 关节弧度
+	double jrad[5]; // �ؽڻ���
 		
-	double ld_temp[8];     // 中间变量
-	MtxKine lm_Tcp;        // 中间变量,TCP矩阵
+	double ld_temp[8];     // �м����
+	MtxKine lm_Tcp;        // �м����,TCP����
 
-    //--------------------- 关节弧度 -------------------------//
+    //--------------------- �ؽڻ��� -------------------------//
 	for (i=0; i<5; i++)
 	{
 		jrad[i] = gdJPos[i] * PI_RAD;
 	}
 
-    //--------------------- Tcp矩阵 -------------------------//
+    //--------------------- Tcp���� -------------------------//
 	double c23 = cos(jrad[1] + jrad[2]);
 	double s23 = sin(jrad[1] + jrad[2]);
 	double c234 = cos(jrad[1] + jrad[2] + jrad[3]);
 	double s234 = sin(jrad[1] + jrad[2] + jrad[3]);
 
-    // 计算Tcp姿态矩阵的参数 //
+    // ����Tcp��̬����Ĳ��� //
     lm_Tcp.R11 =   cos(jrad[0]) * c234 * cos(jrad[4]) + sin(jrad[0]) * sin(jrad[4]);
 	lm_Tcp.R12 = - cos(jrad[0]) * c234 * sin(jrad[4]) + sin(jrad[0]) * cos(jrad[4]);
 	lm_Tcp.R13 =   cos(jrad[0]) * s234;
@@ -2223,7 +2223,7 @@ int Kine_CR_FiveDoF_G1::FKine(double gdJPos[], double gdCPos[])
 	lm_Tcp.R32 = - s234 * sin(jrad[4]);
 	lm_Tcp.R33 = - c234;
 
-    // 计算Tcp位置 //
+    // ����Tcpλ�� //
 	lm_Tcp.X =  lm_Tcp.R13 * (m_dL4 + m_dL5)
 			  + cos(jrad[0]) * c23 * m_dL3
 			  + cos(jrad[0]) * cos(jrad[1]) * m_dL2;
@@ -2234,8 +2234,8 @@ int Kine_CR_FiveDoF_G1::FKine(double gdJPos[], double gdCPos[])
 			  + s23 * m_dL3
 			  + sin(jrad[1]) * m_dL2
 			  + m_dL1;
-    //--------------------- Tcp位姿 -------------------------//
-    // 计算工具坐标系RPY角 - rad //
+    //--------------------- Tcpλ�� -------------------------//
+    // ���㹤������ϵRPY�� - rad //
 	ld_temp[5] = atan2(-lm_Tcp.R31, sqrt(lm_Tcp.R11 * lm_Tcp.R11 + lm_Tcp.R21 * lm_Tcp.R21));
 
     if (fabs(ld_temp[5] - PI / 2) < RT_LITTLE)
@@ -2289,27 +2289,27 @@ int Kine_CR_FiveDoF_G1::FKine(double gdJPos[], double gdCPos[])
 
 int Kine_CR_FiveDoF_G1::FKine_Inc(IN double gdJPos[5], IN double inc[3], OUT double gdCPos[3])
 {
-	// 关节角度 - 关节弧度 - Tcp矩阵 - 位姿
+	// �ؽڽǶ� - �ؽڻ��� - Tcp���� - λ��
 	// id_jPos  -   jRad   - lm_Tcp  - id_cPos
 	int i;
-	double jrad[5]; // 关节弧度
+	double jrad[5]; // �ؽڻ���
 	
-//	double ld_temp[8];     // 中间变量
-	MtxKine lm_Tcp;        // 中间变量,TCP矩阵
+//	double ld_temp[8];     // �м����
+	MtxKine lm_Tcp;        // �м����,TCP����
 	
-    //--------------------- 关节弧度 -------------------------//
+    //--------------------- �ؽڻ��� -------------------------//
 	for (i=0; i<5; i++)
 	{
 		jrad[i] = gdJPos[i] * PI_RAD;
 	}
 	
-    //--------------------- Tcp矩阵 -------------------------//
+    //--------------------- Tcp���� -------------------------//
 	double c23 = cos(jrad[1] + jrad[2]);
 	double s23 = sin(jrad[1] + jrad[2]);
 	double c234 = cos(jrad[1] + jrad[2] + jrad[3]);
 	double s234 = sin(jrad[1] + jrad[2] + jrad[3]);
 	
-    // 计算Tcp姿态矩阵的参数 //
+    // ����Tcp��̬����Ĳ��� //
     lm_Tcp.R11 =   cos(jrad[0]) * c234 * cos(jrad[4]) + sin(jrad[0]) * sin(jrad[4]);
 	lm_Tcp.R12 = - cos(jrad[0]) * c234 * sin(jrad[4]) + sin(jrad[0]) * cos(jrad[4]);
 	lm_Tcp.R13 =   cos(jrad[0]) * s234;
@@ -2320,7 +2320,7 @@ int Kine_CR_FiveDoF_G1::FKine_Inc(IN double gdJPos[5], IN double inc[3], OUT dou
 	lm_Tcp.R32 = - s234 * sin(jrad[4]);
 	lm_Tcp.R33 = - c234;
 	
-    // 计算Tcp位置 //
+    // ����Tcpλ�� //
 	lm_Tcp.X =  lm_Tcp.R13 * (m_dL4 + m_dL5)
 		+ cos(jrad[0]) * c23 * m_dL3
 		+ cos(jrad[0]) * cos(jrad[1]) * m_dL2;
@@ -2341,30 +2341,30 @@ int Kine_CR_FiveDoF_G1::FKine_Inc(IN double gdJPos[5], IN double inc[3], OUT dou
 }
 
 /******************************************************************************
- * 函数：IKine()
- * 功能：逆解
+ * ������IKine()
+ * ���ܣ����
  *
- * 输入：double* gdCPos  - 位姿数组, (x,y,z,w,p,r)
- *       double* gdJCurr - 当前关节转角, 5关节
- * 输出：double* gdJPos  - 逆解关节转角, 5关节
+ * ���룺double* gdCPos  - λ������, (x,y,z,w,p,r)
+ *       double* gdJCurr - ��ǰ�ؽ�ת��, 5�ؽ�
+ * �����double* gdJPos  - ���ؽ�ת��, 5�ؽ�
  *
- * 返回：int - 0成功, 其他错误
+ * ���أ�int - 0�ɹ�, ��������
  ******************************************************************************/
  int Kine_CR_FiveDoF_G1::IKine(double* gdCPos, double* gdJCurr, double* gdJPos)
  {
-	//   位姿  - Tcp矩阵 - 关节弧度 - 关节角度
+	//   λ��  - Tcp���� - �ؽڻ��� - �ؽڽǶ�
 	// id_cPos - lm_Tcp  - ld_jRad  - id_jPos
 	int i;
 	int result;
-	int li_flag[4] = {0};      // 四组解的情况,0为有解
+	int li_flag[4] = {0};      // ���������,0Ϊ�н�
 
 	double s1,c1,s2,c2, s3, c3, s5, c5, s234, c234;
 
-	double ld_temp[8];       // 中间变量
-	MtxKine lm_Tcp;          // 中间变量,TCP矩阵
-	double gd_rad[4][5];     // 中间变量，四组逆解
+	double ld_temp[8];       // �м����
+	MtxKine lm_Tcp;          // �м����,TCP����
+	double gd_rad[4][5];     // �м�������������
 
-    //--------------------- TCP矩阵 -------------------------//
+    //--------------------- TCP���� -------------------------//
 	ld_temp[1] = sin(gdCPos[3] * PI_RAD);
 	ld_temp[2] = cos(gdCPos[3] * PI_RAD);
 	ld_temp[3] = sin(gdCPos[4] * PI_RAD);
@@ -2386,8 +2386,8 @@ int Kine_CR_FiveDoF_G1::FKine_Inc(IN double gdJPos[5], IN double inc[3], OUT dou
 	lm_Tcp.Y = - (m_dL4 + m_dL5) * lm_Tcp.R23 + gdCPos[1];
 	lm_Tcp.Z = - (m_dL4 + m_dL5) * lm_Tcp.R33 + gdCPos[2];
 
-    //--------------------- 关节弧度 -------------------------//
-    //------ 转角1 -------//
+    //--------------------- �ؽڻ��� -------------------------//
+    //------ ת��1 -------//
 	ld_temp[0] = atan2(lm_Tcp.Y, lm_Tcp.X);
 	ld_temp[1] = atan2(- lm_Tcp.Y, - lm_Tcp.X);
 	RadInRange(&ld_temp[0], &gdJCurr[0]);
@@ -2396,7 +2396,7 @@ int Kine_CR_FiveDoF_G1::FKine_Inc(IN double gdJPos[5], IN double inc[3], OUT dou
 	gd_rad[0][0] = gd_rad[1][0] = ld_temp[0];
 	gd_rad[2][0] = gd_rad[3][0] = ld_temp[1];
 
-    //------ 转角5,3 ------//
+    //------ ת��5,3 ------//
     for (i=0; i<2; i++)
     {
         s1 = sin(gd_rad[2*i][0]);
@@ -2405,14 +2405,14 @@ int Kine_CR_FiveDoF_G1::FKine_Inc(IN double gdJPos[5], IN double inc[3], OUT dou
 		s5 = s1 * lm_Tcp.R11 - c1 * lm_Tcp.R21;
 		c5 = s1 * lm_Tcp.R12 - c1 * lm_Tcp.R22;
 
-		// 计算转角5 // 
+		// ����ת��5 // 
 		ld_temp[0] = atan2(s5, c5);
 		RadInRange(&ld_temp[0], &gdJCurr[4]);
 
         gd_rad[2*i][4]   = ld_temp[0];
         gd_rad[2*i+1][4] = ld_temp[0];
 
-		// 计算转角3 //
+		// ����ת��3 //
 		ld_temp[2] = (
 			  (lm_Tcp.X * c1 + lm_Tcp.Y * s1) * (lm_Tcp.X * c1 + lm_Tcp.Y * s1)
 			+ (lm_Tcp.Z - m_dL1) * (lm_Tcp.Z - m_dL1) 
@@ -2425,7 +2425,7 @@ int Kine_CR_FiveDoF_G1::FKine_Inc(IN double gdJPos[5], IN double inc[3], OUT dou
 		}
 		else if (ld_temp[0] < 0)
 		{
-			li_flag[2*i]   = 1;     // 标志 - 此组解无解
+			li_flag[2*i]   = 1;     // ��־ - ������޽�
 			li_flag[2*i+1] = 1;
 		}
 		else
@@ -2444,10 +2444,10 @@ int Kine_CR_FiveDoF_G1::FKine_Inc(IN double gdJPos[5], IN double inc[3], OUT dou
 
 	if (li_flag[0] && li_flag[2])
 	{
-		return ERR_NOINV; //  腰关节无可用逆解值 //
+		return ERR_NOINV; //  ���ؽ��޿������ֵ //
     }
 	
-    //------ 转角2,4 ------//
+    //------ ת��2,4 ------//
     for (i=0; i<4; i++)
     {
 		if (0 == li_flag[i])
@@ -2458,7 +2458,7 @@ int Kine_CR_FiveDoF_G1::FKine_Inc(IN double gdJPos[5], IN double inc[3], OUT dou
 			s3 = sin(gd_rad[i][2]);
 			c3 = cos(gd_rad[i][2]);
 		
-			// 计算转角2 //
+			// ����ת��2 //
 			ld_temp[1] = lm_Tcp.Z - m_dL1;
 			ld_temp[2] = lm_Tcp.X * c1 + lm_Tcp.Y * s1;
 			ld_temp[3] = ld_temp[1] * ld_temp[1] + ld_temp[2] * ld_temp[2];
@@ -2472,11 +2472,11 @@ int Kine_CR_FiveDoF_G1::FKine_Inc(IN double gdJPos[5], IN double inc[3], OUT dou
 			gd_rad[i][1] = ld_temp[4];
 
 
-			// 计算转角4 //
+			// ����ת��4 //
 			s234 = lm_Tcp.R13 * c1 + lm_Tcp.R23 * s1;
 			c234 = - lm_Tcp.R33;
 			
-			ld_temp[0] = atan2(s234, c234); // 234之和
+			ld_temp[0] = atan2(s234, c234); // 234֮��
 
 			
 			ld_temp[3] = ld_temp[0] - gd_rad[i][1] - gd_rad[i][2];
@@ -2486,10 +2486,10 @@ int Kine_CR_FiveDoF_G1::FKine_Inc(IN double gdJPos[5], IN double inc[3], OUT dou
 		}
 	}
 	
-	//------ 最佳结果 ------//
+	//------ ��ѽ�� ------//
 	for (i=0; i<4; i++)
 	{
-		if (0 == li_flag[i])  // 求取相对绝对值
+		if (0 == li_flag[i])  // ��ȡ��Ծ���ֵ
 		{
 			ld_temp[i] = fabs(gd_rad[i][0] - gdJCurr[0] * PI_RAD) + 
 			      	     fabs(gd_rad[i][1] - gdJCurr[1] * PI_RAD) + 
@@ -2502,21 +2502,21 @@ int Kine_CR_FiveDoF_G1::FKine_Inc(IN double gdJPos[5], IN double inc[3], OUT dou
 	{
 		if (0 == li_flag[i])
 		{
-			s1 = ld_temp[i]; // 用第一个有效值 来 初始化 中间变量s1
+			s1 = ld_temp[i]; // �õ�һ����Чֵ �� ��ʼ�� �м����s1
 			result = i;
-			break;           // 推出初始化
+			break;           // �Ƴ���ʼ��
 		}
 	}
 	for (i=0; i<4; i++)
 	{
-		if ((0 == li_flag[i]) && (ld_temp[i] <= s1))  // 有效值 | 相对绝对值最小
+		if ((0 == li_flag[i]) && (ld_temp[i] <= s1))  // ��Чֵ | ��Ծ���ֵ��С
 		{
 			//ld_jRad = gd_rad[i];
 			s1 = ld_temp[i];
 			result = i;
 		}
 	}
-	//------ 关节角度 ------//
+	//------ �ؽڽǶ� ------//
 	gdJPos[0] = gd_rad[result][0] * PI_DEG;
 	gdJPos[1] = gd_rad[result][1] * PI_DEG;
 	gdJPos[2] = gd_rad[result][2] * PI_DEG;
@@ -2528,21 +2528,21 @@ int Kine_CR_FiveDoF_G1::FKine_Inc(IN double gdJPos[5], IN double inc[3], OUT dou
  }
 
 /******************************************************************************
- * 函数：Vel_FKine()
- * 功能：速度正解, 工具坐标系速度
+ * ������Vel_FKine()
+ * ���ܣ��ٶ�����, ��������ϵ�ٶ�
  *
- * 输入：double gdJPos[]  - 当前关节转角, 5关节, deg
- *       double gdJVel[] - 当前关节速度, 5关节, deg/s
- * 输出：double gdCVel[] - 末端速度, [vx,vy,vz,wx,wy,wz], mm/s, deg/s
+ * ���룺double gdJPos[]  - ��ǰ�ؽ�ת��, 5�ؽ�, deg
+ *       double gdJVel[] - ��ǰ�ؽ��ٶ�, 5�ؽ�, deg/s
+ * �����double gdCVel[] - ĩ���ٶ�, [vx,vy,vz,wx,wy,wz], mm/s, deg/s
  *
- * 返回：int - 0成功, 其他错误
+ * ���أ�int - 0�ɹ�, ��������
  ******************************************************************************/
 int Kine_CR_FiveDoF_G1::Vel_FKine(double gdJPos[], double gdJVel[], double gdCVel[])
 {
 /*
 	int i;
 
-	double c2 = cos((gdJPos[1]) * PI_RAD);  // 转换为弧度
+	double c2 = cos((gdJPos[1]) * PI_RAD);  // ת��Ϊ����
 	double s23 = sin((gdJPos[1] + gdJPos[2]) * PI_RAD);
 	double c23 = cos((gdJPos[1] + gdJPos[2]) * PI_RAD);
 	double s4 = sin((gdJPos[3]) * PI_RAD);
@@ -2578,7 +2578,7 @@ int Kine_CR_FiveDoF_G1::Vel_FKine(double gdJPos[], double gdJVel[], double gdCVe
 			  + c5 * (v[1] + v[2] + v[3]);
 	gdCVel[5] = - c234 * v[0] + v[4];
 
-	// 转换为角度
+	// ת��Ϊ�Ƕ�
 	gdCVel[3] *= PI_DEG;
 	gdCVel[4] *= PI_DEG;
 	gdCVel[5] *= PI_DEG;
@@ -2594,7 +2594,7 @@ int Kine_CR_FiveDoF_G1::Vel_FKine(double gdJPos[], double gdJVel[], double gdCVe
 	Matrix lm_cvel(6, 1);
 	Matrix lm_Jacobian(6, 5);
 	
-    //------------------------- 关节弧度 -----------------------------//
+    //------------------------- �ؽڻ��� -----------------------------//
 	for(i=0; i<5; i++)
 	{		
 		rad[i] = (gdJPos[i]) * PI_RAD;
@@ -2623,8 +2623,8 @@ int Kine_CR_FiveDoF_G1::Vel_FKine(double gdJPos[], double gdJVel[], double gdCVe
 	l45 = m_dL4 + m_dL5;
 
 
-	// 工具坐标系雅可比矩阵
-	//--------------------------- 第五列 -------------------------------//
+	// ��������ϵ�ſɱȾ���
+	//--------------------------- ������ -------------------------------//
 	// [0,4]-[5,4]
 	lm_Jacobian.Mtx[0*5 + 4] = 0;
 	lm_Jacobian.Mtx[1*5 + 4] = 0;
@@ -2633,7 +2633,7 @@ int Kine_CR_FiveDoF_G1::Vel_FKine(double gdJPos[], double gdJVel[], double gdCVe
 	lm_Jacobian.Mtx[4*5 + 4] = 0;
 	lm_Jacobian.Mtx[5*5 + 4] = 1;
 	
-	//--------------------------- 第四列 -------------------------------//
+	//--------------------------- ������ -------------------------------//
 	// [0,3]-[5,3]
 	lm_Jacobian.Mtx[0*5 + 3] =  l45*c5;
 	lm_Jacobian.Mtx[1*5 + 3] =  -l45*s5;
@@ -2642,7 +2642,7 @@ int Kine_CR_FiveDoF_G1::Vel_FKine(double gdJPos[], double gdJVel[], double gdCVe
 	lm_Jacobian.Mtx[4*5 + 3] =  c5;
 	lm_Jacobian.Mtx[5*5 + 3] =  0;
 	
-	//--------------------------- 第三列 -------------------------------//
+	//--------------------------- ������ -------------------------------//
 	// [0,2]
 	lm_Jacobian.Mtx[0*5 + 2] =  c5*(s4*l3+l45);
 	lm_Jacobian.Mtx[1*5 + 2] = -s5*(s4*l3+l45);
@@ -2651,7 +2651,7 @@ int Kine_CR_FiveDoF_G1::Vel_FKine(double gdJPos[], double gdJVel[], double gdCVe
 	lm_Jacobian.Mtx[4*5 + 2] =  c5;
 	lm_Jacobian.Mtx[5*5 + 2] =  0;
 	
-	//--------------------------- 第二列 -------------------------------//
+	//--------------------------- �ڶ��� -------------------------------//
 	// [0,1]
 	lm_Jacobian.Mtx[0*5 + 1] =  c5*(s23*l2 + s4*l3 + l45);
 	lm_Jacobian.Mtx[1*5 + 1] = -s5*(s23*l2 + s4*l3 + l45);
@@ -2660,7 +2660,7 @@ int Kine_CR_FiveDoF_G1::Vel_FKine(double gdJPos[], double gdJVel[], double gdCVe
 	lm_Jacobian.Mtx[4*5 + 1] =  c5;	
 	lm_Jacobian.Mtx[5*5 + 1] =  0;
 	
-	//---------------------------- 第一列 --------------------------------//
+	//---------------------------- ��һ�� --------------------------------//
 	// [0,0]
 	lm_Jacobian.Mtx[0*5 + 0] = -s5*(c2*l2 + c23*l3 + s234*l45);
 	lm_Jacobian.Mtx[1*5 + 0] = -c5*(c2*l2 + c23*l3 + s234*l45);
@@ -2685,14 +2685,14 @@ int Kine_CR_FiveDoF_G1::Vel_FKine(double gdJPos[], double gdJVel[], double gdCVe
 }
 
 /******************************************************************************
- * 函数：Vel_IKine()
- * 功能：速度逆解
+ * ������Vel_IKine()
+ * ���ܣ��ٶ����
  *
- * 输入：double gdJPos[] - 当前关节转角, 5关节, deg
- *       double gdCVel[] - 当前末端速度, [vx,vy,vz,wx,wy,wz], m/s, deg/s
- * 输出：double gdJVel[] - 关节速度, 5关节, deg/s
+ * ���룺double gdJPos[] - ��ǰ�ؽ�ת��, 5�ؽ�, deg
+ *       double gdCVel[] - ��ǰĩ���ٶ�, [vx,vy,vz,wx,wy,wz], m/s, deg/s
+ * �����double gdJVel[] - �ؽ��ٶ�, 5�ؽ�, deg/s
  *
- * 返回：int - 0成功, 其他错误
+ * ���أ�int - 0�ɹ�, ��������
  ******************************************************************************/
 int Kine_CR_FiveDoF_G1::Vel_IKine(double gdJPos[], double gdCVel[], double gdJVel[])
 {
@@ -2711,10 +2711,10 @@ int Kine_CR_FiveDoF_G1::Vel_IKine(double gdJPos[], double gdCVel[], double gdJVe
 	double ki, kb;
 	double ei, eb;
 
-	MtxKine lm_Tcp;        // 中间变量,TCP矩阵	
+	MtxKine lm_Tcp;        // �м����,TCP����	
 
 
-    //------------------------- 关节弧度 -----------------------------//
+    //------------------------- �ؽڻ��� -----------------------------//
 	for(i=0; i<5; i++)
 	{		
 		rad[i] = (gdJPos[i]) * PI_RAD;
@@ -2742,7 +2742,7 @@ int Kine_CR_FiveDoF_G1::Vel_IKine(double gdJPos[], double gdCVel[], double gdJVe
 	l45 = m_dL4 + m_dL5;
 
 	
-	// 腕速度
+	// ���ٶ�
 	ld_wvel[0] = gdCVel[0];
 	ld_wvel[1] = gdCVel[1];
 	ld_wvel[2] = gdCVel[2];
@@ -2754,7 +2754,7 @@ int Kine_CR_FiveDoF_G1::Vel_IKine(double gdJPos[], double gdCVel[], double gdJVe
 	ld_wvel[2] = ld_wvel[2];
 
 
-	// 计算Tcp姿态矩阵的参数 //
+	// ����Tcp��̬����Ĳ��� //
     lm_Tcp.R11 =   c1 * c234 * c5 + s1 * s5;
 	lm_Tcp.R12 = - c1 * c234 * s5 + s1 * c5;
 	lm_Tcp.R13 =   c1 * s234;
@@ -2765,7 +2765,7 @@ int Kine_CR_FiveDoF_G1::Vel_IKine(double gdJPos[], double gdCVel[], double gdJVe
 	lm_Tcp.R32 = - s234 * s5;
 	lm_Tcp.R33 = - c234;
 
-	// 基坐标系下腕速度
+	// ������ϵ�����ٶ�
 	lm_cvel.Mtx[0] = lm_Tcp.R11*ld_wvel[0] + lm_Tcp.R12*ld_wvel[1] + lm_Tcp.R13*ld_wvel[2];
 	lm_cvel.Mtx[1] = lm_Tcp.R21*ld_wvel[0] + lm_Tcp.R22*ld_wvel[1] + lm_Tcp.R23*ld_wvel[2];
 	lm_cvel.Mtx[2] = lm_Tcp.R31*ld_wvel[0] + lm_Tcp.R32*ld_wvel[1] + lm_Tcp.R33*ld_wvel[2];
@@ -2773,8 +2773,8 @@ int Kine_CR_FiveDoF_G1::Vel_IKine(double gdJPos[], double gdCVel[], double gdJVe
 	lm_cvel.Mtx[4] = lm_Tcp.R21*ld_wvel[3] + lm_Tcp.R22*ld_wvel[4] + lm_Tcp.R23*ld_wvel[5];
 	lm_cvel.Mtx[5] = lm_Tcp.R31*ld_wvel[3] + lm_Tcp.R32*ld_wvel[4] + lm_Tcp.R33*ld_wvel[5];
 
-	// 基坐标系雅可比矩阵
-	//--------------------------- 第五列 -------------------------------//
+	// ������ϵ�ſɱȾ���
+	//--------------------------- ������ -------------------------------//
 	// [0,4]-[5,4]
 	lm_Jacobian.Mtx[0*5 + 4] = 0;
 	lm_Jacobian.Mtx[1*5 + 4] = 0;
@@ -2783,7 +2783,7 @@ int Kine_CR_FiveDoF_G1::Vel_IKine(double gdJPos[], double gdCVel[], double gdJVe
 	lm_Jacobian.Mtx[4*5 + 4] = s1*s234;
 	lm_Jacobian.Mtx[5*5 + 4] = -c234;
 	
-	//--------------------------- 第四列 -------------------------------//
+	//--------------------------- ������ -------------------------------//
 	// [0,3]-[5,3]
 	lm_Jacobian.Mtx[0*5 + 3] =  0;
 	lm_Jacobian.Mtx[1*5 + 3] =  0;
@@ -2792,7 +2792,7 @@ int Kine_CR_FiveDoF_G1::Vel_IKine(double gdJPos[], double gdCVel[], double gdJVe
 	lm_Jacobian.Mtx[4*5 + 3] =  -c1;
 	lm_Jacobian.Mtx[5*5 + 3] =  0;
 	
-	//--------------------------- 第三列 -------------------------------//
+	//--------------------------- ������ -------------------------------//
 	// [0,2]
 	lm_Jacobian.Mtx[0*5 + 2] = -c1*(s23*l3);
 	lm_Jacobian.Mtx[1*5 + 2] = -s1*(s23*l3);
@@ -2801,7 +2801,7 @@ int Kine_CR_FiveDoF_G1::Vel_IKine(double gdJPos[], double gdCVel[], double gdJVe
 	lm_Jacobian.Mtx[4*5 + 2] =  -c1;
 	lm_Jacobian.Mtx[5*5 + 2] =  0;
 	
-	//--------------------------- 第二列 -------------------------------//
+	//--------------------------- �ڶ��� -------------------------------//
 	// [0,1]
 	lm_Jacobian.Mtx[0*5 + 1] = -c1*(s2*l2 + s23*l3);
 	lm_Jacobian.Mtx[1*5 + 1] = -s1*(s2*l2 + s23*l3);
@@ -2810,7 +2810,7 @@ int Kine_CR_FiveDoF_G1::Vel_IKine(double gdJPos[], double gdCVel[], double gdJVe
 	lm_Jacobian.Mtx[4*5 + 1] =  -c1;	
 	lm_Jacobian.Mtx[5*5 + 1] =  0;
 	
-	//---------------------------- 第一列 --------------------------------//
+	//---------------------------- ��һ�� --------------------------------//
 	// [0,0]
 	lm_Jacobian.Mtx[0*5 + 0] = -s1*(c2*l2 + c23*l3);
 	lm_Jacobian.Mtx[1*5 + 0] =  c1*(c2*l2 + c23*l3);
@@ -2819,7 +2819,7 @@ int Kine_CR_FiveDoF_G1::Vel_IKine(double gdJPos[], double gdCVel[], double gdJVe
 	lm_Jacobian.Mtx[4*5 + 0] =  0;
 	lm_Jacobian.Mtx[5*5 + 0] =  1;
 	
-	// 系数
+	// ϵ��
 	ki = SQUARE(c2*l2+c23*l3) + SQUARE(s234);
 	kb = SQUARE(s3);
 	ei = (fabs(ki) <= KINE_DAMP_EI) ? KINE_RATIO_V*(1-fabs(ki)/KINE_DAMP_EI) : 0;
@@ -2828,34 +2828,34 @@ int Kine_CR_FiveDoF_G1::Vel_IKine(double gdJPos[], double gdCVel[], double gdJVe
 	eb = kb / (SQUARE(kb)+eb);
 	
 	// Inv(JT*J)
-	// 1行
+	// 1��
 	lm_inv.Mtx[0*5+0] = 1 * ei;
 	lm_inv.Mtx[0*5+1] = lm_inv.Mtx[1*5+0] = 0;
 	lm_inv.Mtx[0*5+2] = lm_inv.Mtx[2*5+0] = 0;
 	lm_inv.Mtx[0*5+3] = lm_inv.Mtx[3*5+0] = 0;
 	lm_inv.Mtx[0*5+4] = lm_inv.Mtx[4*5+0] = c234 * ei;
 
-	// 2行
+	// 2��
 	lm_inv.Mtx[1*5+1] = eb / SQUARE(l2);
 	lm_inv.Mtx[1*5+2] = lm_inv.Mtx[2*5+1] = -eb*(c3*l2+l3)/(SQUARE(l2)*l3);
 	lm_inv.Mtx[1*5+3] = lm_inv.Mtx[3*5+1] = eb*c3/(l2*l3);
 	lm_inv.Mtx[1*5+4] = lm_inv.Mtx[4*5+1] = 0;
 
-	// 3行
+	// 3��
 	lm_inv.Mtx[2*5+2] = eb * (SQUARE(l2)+SQUARE(l3)+2*l2*l3*c3)/(SQUARE(l2*l3));
 	lm_inv.Mtx[2*5+3] = lm_inv.Mtx[3*5+2] = -eb*(l2+l3*c3)/(l2*SQUARE(l3));
 	lm_inv.Mtx[2*5+4] = lm_inv.Mtx[4*5+2] = 0;
 
-	// 4行
+	// 4��
 	lm_inv.Mtx[3*5+3] = eb * (1+SQUARE(l3*s3))/(SQUARE(l3));
 	lm_inv.Mtx[3*5+4] = lm_inv.Mtx[4*5+3] = 0;
 
-	// 5行
+	// 5��
 	lm_inv.Mtx[4*5+4] = ei * (1 + SQUARE(c2*l2+c23*l3));	
 
 
 
-	// 关节速度
+	// �ؽ��ٶ�
 	lm_jvel = lm_inv * (Trv(lm_Jacobian) * lm_cvel);
 	
 	for(i=0; i<5; i++)
@@ -2890,11 +2890,16 @@ int Kine_CR_FiveDoF_G2::FKine(double gdJPos[], double gdCPos[])
 {
 	double jpos_G2[5];
 
-	jpos_G2[0] = - gdJPos[4];
+	// jpos_G2[0] = - gdJPos[4];
+	// jpos_G2[1] = gdJPos[3];
+	// jpos_G2[2] = gdJPos[2];
+	// jpos_G2[3] = gdJPos[1];
+	// jpos_G2[4] = -gdJPos[0];
+	jpos_G2[0] = gdJPos[4];
 	jpos_G2[1] = gdJPos[3];
 	jpos_G2[2] = gdJPos[2];
 	jpos_G2[3] = gdJPos[1];
-	jpos_G2[4] = -gdJPos[0];
+	jpos_G2[4] = gdJPos[0];
 
 	return kine.FKine(jpos_G2, gdCPos);
 }
@@ -2918,11 +2923,16 @@ int Kine_CR_FiveDoF_G2::IKine(double gdCPos[], double gdJCurr[], double gdJPos[]
 	double jcurrpos_G2[5];
 	int flag;
 	
-	jcurrpos_G2[0] = - gdJCurr[4];
+	// jcurrpos_G2[0] = - gdJCurr[4];
+	// jcurrpos_G2[1] =   gdJCurr[3];
+	// jcurrpos_G2[2] =   gdJCurr[2];
+	// jcurrpos_G2[3] =   gdJCurr[1];
+	// jcurrpos_G2[4] = - gdJCurr[0];
+	jcurrpos_G2[0] =   gdJCurr[4];
 	jcurrpos_G2[1] =   gdJCurr[3];
 	jcurrpos_G2[2] =   gdJCurr[2];
 	jcurrpos_G2[3] =   gdJCurr[1];
-	jcurrpos_G2[4] = - gdJCurr[0];
+	jcurrpos_G2[4] =   gdJCurr[0];
 
 	flag = kine.IKine(gdCPos, jcurrpos_G2, jpos_G2);
 
@@ -3005,7 +3015,7 @@ void Trans_PosToMtx(double* pos, MtxKine* output, int inv)
 {
 	double ld_temp[6];
 	
-	// 计算位姿变换矩阵 //
+	// ����λ�˱任���� //
 	ld_temp[0] = sin(pos[3] * PI_RAD);
 	ld_temp[1] = cos(pos[3] * PI_RAD);
 	ld_temp[2] = sin(pos[4] * PI_RAD);
@@ -3023,10 +3033,10 @@ void Trans_PosToMtx(double* pos, MtxKine* output, int inv)
     output->R32 = ld_temp[3] * ld_temp[4];
     output->R33 = ld_temp[3] * ld_temp[5];
 	
-	// 求逆矩阵
+	// �������
 	if(1 == inv)
 	{
-		// 姿态求逆 - 转置矩阵 //
+		// ��̬���� - ת�þ��� //
 		ld_temp[0] = output->R12;
 		output->R12 = output->R21;
 		output->R21 = ld_temp[0];
@@ -3039,7 +3049,7 @@ void Trans_PosToMtx(double* pos, MtxKine* output, int inv)
 		output->R23 = output->R32;
 		output->R32 = ld_temp[0];
 		
-		// 位置求逆 //
+		// λ������ //
 		output->X = -( output->R11 * pos[0] + 
 			output->R12 * pos[1] +
 			output->R13 * pos[2] );
@@ -3061,8 +3071,8 @@ void Trans_MtxToPos(MtxKine* input, double* outpos)
 {
 	double ld_temp[6];
 	
-    //--------------------- 输出位姿 -------------------------//
-    // 计算RPY角 - rad //
+    //--------------------- ���λ�� -------------------------//
+    // ����RPY�� - rad //
 	ld_temp[4] = atan2(- input->R31, 
 		sqrt(input->R11 * input->R11 + input->R21 * input->R21));
 	
@@ -3116,7 +3126,7 @@ void Mtx_Multiply(MtxKine* input, MtxKine* middle, MtxKine* output, int inv)
 {
 	double ld_temp[3];
 	
-    // 姿态矩阵 //
+    // ��̬���� //
     output->R11 = input->R11 * middle->R11 + 
 		input->R12 * middle->R21 + 
 		input->R13 * middle->R31;
@@ -3145,7 +3155,7 @@ void Mtx_Multiply(MtxKine* input, MtxKine* middle, MtxKine* output, int inv)
 		input->R32 * middle->R23 + 
 		input->R33 * middle->R33;
 	
-    // 位置 //
+    // λ�� //
 	output->X = input->R11 * middle->X +
 		input->R12 * middle->Y + 
 		input->R13 * middle->Z + input->X;
@@ -3156,10 +3166,10 @@ void Mtx_Multiply(MtxKine* input, MtxKine* middle, MtxKine* output, int inv)
 		input->R32 * middle->Y + 
 		input->R33 * middle->Z + input->Z;
 	
-	// 求逆矩阵
+	// �������
 	if(1 == inv)
 	{
-		// 姿态求逆 - 转置矩阵 //
+		// ��̬���� - ת�þ��� //
 		ld_temp[0] = output->R12;
 		output->R12 = output->R21;
 		output->R21 = ld_temp[0];
@@ -3172,7 +3182,7 @@ void Mtx_Multiply(MtxKine* input, MtxKine* middle, MtxKine* output, int inv)
 		output->R23 = output->R32;
 		output->R32 = ld_temp[0];
 		
-		// 位置求逆 //
+		// λ������ //
 		ld_temp[0] = output->X;
 		ld_temp[1] = output->Y;
 		ld_temp[2] = output->Z;
